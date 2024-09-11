@@ -1,0 +1,23 @@
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    margin-top: 20px;
+    font-size: 20px;
+    align-items: center;
+}
+
+
+
+.link.logo {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+header>nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
