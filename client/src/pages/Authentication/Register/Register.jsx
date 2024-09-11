@@ -3,7 +3,15 @@ import "../Authentication.css"
 
 const Register = () => {
   return (
-    <div>Register</div>
+    <>
+  <form className='register'>
+    <h1>Register</h1>
+    <input type="text" placeholder='username' />
+    <input type="text" placeholder='Email' />
+    <input type="pasword" placeholder='password' />
+    <button type='submit'>Regiter</button>
+  </form>
+    </>
   )
 }
 
