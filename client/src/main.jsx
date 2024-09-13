@@ -10,6 +10,7 @@ import Root from './foundation/Root.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
 import Login from './pages/Authentication/Login/Login.jsx';
 import Register from './pages/Authentication/Register/Register.jsx';
+import ContextContainer from './context/ContextContainer.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <ContextContainer>
     <RouterProvider router={router} />
+    </ContextContainer>
   </StrictMode>,
 )
