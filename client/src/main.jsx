@@ -12,6 +12,7 @@ import Login from './pages/Authentication/Login/Login.jsx';
 import Register from './pages/Authentication/Register/Register.jsx';
 import ContextContainer from './context/ContextContainer.jsx';
 import Parrent from '../test/Parrent.jsx';
+import CreateNewPost from './pages/CreateNewPost/CreateNewPost.jsx';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />
+      },
+      {
+        path: "/newPost",
+        element: <CreateNewPost />
       },
       {
         path: "/register",

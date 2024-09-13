@@ -1,0 +1,35 @@
+.create__post {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.new_post_img_upload label img {
+    cursor: pointer;
+    height: 100px;
+    width: auto;
+}
+
+.ql-editor {
+    height: calc(70vh - 100px) !important;
+}
+
+.create__post input{
+    padding: 8px;
+    box-shadow: rgba(50, 50, 105, 0.15) 2px 2px 5px 1px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+    border: none;
+}
+
+.form_btn{
+   padding: 6px;
+   font-size: 19px;
+   margin-bottom: 15px;
+   background: #fa4848;
+   border: none;
+   border-radius: 15px;
+   color: aliceblue;
+}
+.form_btn:hover{
+    color: black;
+}

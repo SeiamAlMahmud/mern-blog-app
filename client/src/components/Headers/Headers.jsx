@@ -30,7 +30,7 @@ const Headers = () => {
         <header>
             <Link className='link logo'>M Blog</Link>
             <nav>
-                {token ? <Link className='link link-sm' to={"/"}>Create new Post</Link> : <Link className='link' to={"/login"}>Login</Link>}
+                {token ? <Link className='link link-sm' to={"/newPost"}>Create new Post</Link> : <Link className='link' to={"/login"}>Login</Link>}
                 {token ? <p
                     onClick={logout}
                     className='link link-sm' >LogOut</p> : <Link className='link link-sm' to={"/register"}>Register</Link>}
