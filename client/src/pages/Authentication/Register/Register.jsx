@@ -14,13 +14,13 @@ const Register = () => {
     const value = e.target.value
     setUserData({ ...userData, [name]: value })
   }
-  console.log(userData)
+  // console.log(userData)
 
   const onSubmitHanler = async (e) => {
     e.preventDefault()
     try {
       const response = await api.post("/api/register", userData)
-      console.log(response)
+      // console.log(response)
     } catch (error) {
       console.log(error)
     }
