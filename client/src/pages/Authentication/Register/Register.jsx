@@ -1,14 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../Authentication.css"
 import { useBlogContext } from '../../../context/ContextContainer'
+import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
-  const { api } = useBlogContext()
+  const { api, token, setToken,getToken } = useBlogContext()
   const [userData, setUserData] = useState({
     username: "",
     email: "",
     password: "",
   })
+ 
+  const navigate = useNavigate()
+
+
+
+  useEffect(()=> {
+    if (token) {
+      navigate("/")
+      getToken()
+    }
+  },[token])
   const onChangeMethod = (e) => {
     const name = e.target.name
     const value = e.target.value
@@ -21,6 +33,10 @@ const Register = () => {
     try {
       const response = await api.post("/api/register", userData)
       // console.log(response)
+      if (response.data.success) {
+        setToken(true)
+        navigate('/')
+      }
     } catch (error) {
       console.log(error)
     }
@@ -29,7 +45,7 @@ const Register = () => {
   }
   return (
     <>
-      <form className='register' onSubmit={onSubmitHanler}>
+     {token ? <span class="loader"></span> : (<form className='register' onSubmit={onSubmitHanler}>
         <h1>Register</h1>
         <input type="text"
           placeholder='username'
@@ -46,7 +62,7 @@ const Register = () => {
           value={userData.password}
           onChange={onChangeMethod} />
         <button type='submit'>Regiter</button>
-      </form>
+      </form>)}
     </>
   )
 }

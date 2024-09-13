@@ -1,13 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../Authentication.css"
 import { useBlogContext } from '../../../context/ContextContainer'
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
-  const { api } = useBlogContext()
+  const { api, token, setToken, getToken } = useBlogContext()
   const [userData, setUserData] = useState({
     username: "",
     password: "",
   })
+  const navigate = useNavigate()
+
+  useEffect(()=> {
+    if (token) {
+      navigate("/")
+      getToken()
+    }
+  },[token])
   const onChangeMethod = (e) => {
     const name = e.target.name
     const value = e.target.value
@@ -19,7 +28,12 @@ const Login = () => {
     e.preventDefault()
     try {
       const response = await api.post("/api/login", userData)
-      console.log(response)
+      // console.log(response)
+      if (response.data.success) {
+        setToken(true)
+        navigate('/')
+      }
+      
     } catch (error) {
       console.log(error)
     }
@@ -28,7 +42,7 @@ const Login = () => {
   }
   return (
     <>
-      <form className='login' onSubmit={onSubmitHanler}>
+   { token ? <span class="loader"></span> :  (<form className='login' onSubmit={onSubmitHanler}>
         <h1>Login</h1>
         <input type="text"
           placeholder='username'
@@ -40,7 +54,7 @@ const Login = () => {
           value={userData.password}
           onChange={onChangeMethod} />
         <button type='submit'>Login</button>
-      </form>
+      </form>)}
     </>
   )
 }
