@@ -9,6 +9,7 @@ export const useBlogContext = () => {
 const ContextContainer = ({ children }) => {
     const api = axios.create({
         baseURL: "http://localhost:3000",  // Backend URL
+        withCredentials: true
       });
     
     const content = {api}

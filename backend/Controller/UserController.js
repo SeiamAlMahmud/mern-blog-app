@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import User from '../Models/UserModels.js'; 
+import generatejwtToken from '../utilities/generateJwtToken.js';
 
 const registerController = async (req, res) => {
     const { email, username, password } = req.body;
@@ -83,12 +84,13 @@ try {
         return res.status(401).json({success: false, error: "Invalid Credentials."})
     }
     if (user && isMatch) {
-        
+        generatejwtToken(user._id, res)
         return res.status(200).json({success: true, message: "User login successfully.", docData: user._id})
     }
     
 } catch (error) {
-    
+    console.log(error)
+    res.status(500).json({success: false, error: "Server error"})
 }
 }
 
