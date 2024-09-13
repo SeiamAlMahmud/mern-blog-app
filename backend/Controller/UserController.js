@@ -29,7 +29,8 @@ const registerController = async (req, res) => {
         }
 
         // পাসওয়ার্ড হ্যাশ করা
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         // নতুন ব্যবহারকারী তৈরি করা
         const newUser = await User.create({
