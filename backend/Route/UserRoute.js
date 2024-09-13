@@ -1,16 +1,9 @@
 import express from "express"
-import { loginController, registerController } from "../Controller/UserController.js"
+import { UserCheck, loginController, logout, registerController } from "../Controller/UserController.js"
 const router = express.Router()
 
-router.get("/cookie", (req, res) => {
-    try {
-        console.log(req.cookies)
-        res.json(req.cookies)
-        
-    } catch (error) {
-        
-    }
-})
+router.get("/cookie",UserCheck)
+router.get("/logout",logout)
 
 
 router.post("/register", registerController)

@@ -21,3 +21,20 @@ header>nav {
     gap: 15px;
     align-items: center;
 }
+
+.link-sm{
+    font-size: 22px;
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+    .link-sm{
+        font-size: 19px;
+    }
+}
+
+@media (max-width: 500px) {
+    .link-sm{
+        font-size: 17px;
+    }
+}

@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage/HomePage.jsx';
 import Login from './pages/Authentication/Login/Login.jsx';
 import Register from './pages/Authentication/Register/Register.jsx';
 import ContextContainer from './context/ContextContainer.jsx';
+import Parrent from '../test/Parrent.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />
+      },
+      {
+        path: "/parrent",
+        element: <Parrent />
       }
     ]
   },

@@ -13,13 +13,18 @@ const ContextContainer = ({ children }) => {
         withCredentials: true
     });
     const getToken = async () => {
-
+    
+        try {
         const response = await api.get("/api/cookie")
-        // console.log(Object.keys(response.data) == "token")
-        if (response.data.token) {
+        // console.log(response.data)
+        if (response.data.success) {
             setToken(true)
         }else {
             setToken(false)
+        }
+            
+        } catch (error) {
+            console.log(error.message , "getToken Error")
         }
     }
     useEffect(() => {
