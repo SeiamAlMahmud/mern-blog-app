@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { Children, createContext, useContext, useEffect, useState } from 'react'
 import axios from "axios"
 
 
@@ -7,6 +7,7 @@ export const useBlogContext = () => {
     return useContext(blogContext)
 }
 const ContextContainer = ({ children }) => {
+    // console.log('CHILDREN', children)
     const [token, setToken] = useState(false)
     const api = axios.create({
         baseURL: "http://localhost:3000",  // Backend URL
