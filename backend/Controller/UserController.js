@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import User from '../Models/UserModels.js';
 import generatejwtToken from '../utilities/generateJwtToken.js';
-
+import Post from '../Models/PostModel.js';
+// 
 const registerController = async (req, res) => {
     const { email, username, password } = req.body;
     console.log(email, username, password);
@@ -95,30 +96,68 @@ const loginController = async (req, res) => {
     }
 }
 
-const UserCheck =  (req, res) => {
+const UserCheck = (req, res) => {
     try {
         // console.log(req.cookies['token'])
         if (req.cookies['token']) {
-            res.status(200).json({success: true, token: req.cookies.token})
+            res.status(200).json({ success: true, token: req.cookies.token })
         }
 
     } catch (error) {
-            res.status(401).json({success: false, error: "Unauthorised"})
-            return 
+        res.status(401).json({ success: false, error: "Unauthorised" })
+        return
     }
 }
 
-const logout =  (req, res) => {
+const logout = (req, res) => {
     try {
         res.clearCookie('token');
-       
-          return  res.status(200).json({success: true, message: "user logout successfully"})
-       
+
+        return res.status(200).json({ success: true, message: "user logout successfully" })
+
 
     } catch (error) {
-            res.status(401).json({success: false, error: "Unauthorised"})
-            return 
+        res.status(401).json({ success: false, error: "Unauthorised" })
+        return
     }
 }
 
-export { registerController, loginController, logout, UserCheck };
+const createNewPost = async (req, res) => {
+
+    try {
+
+        const { title, summary, content } = req.body;
+        const username = req.username;
+        const userId = req.userId;
+        console.log(username, userId)
+        const image = req.file ? `/uploads/${req.file.filename}` : null;
+       
+        const post = new Post({
+            title,
+            summary,
+            content,
+            image,
+            userId,
+            username
+          });
+      if (post) {
+        
+          await post.save();
+          res.status(201).json({success: true, message: "post created successfully.", id: post._id})
+      }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({success: false, message: "Server Error."})
+
+    }
+}
+const getAllPosts = async (req, res)=> {
+    try {
+        const posts = await Post.find().sort({ createdAt: -1 });
+        res.json(posts);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+}
+
+export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts };

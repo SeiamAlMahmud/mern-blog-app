@@ -5,6 +5,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import ErrorPage from './foundation/ErrorPage.jsx';
 import Root from './foundation/Root.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
@@ -48,7 +49,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ContextContainer>
-    <RouterProvider router={router} />
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
+      <RouterProvider router={router} />
     </ContextContainer>
   </StrictMode>,
 )
