@@ -1,12 +1,11 @@
 import React from 'react'
 import 'ldrs/helix'
+import "./Loader.css"
 
-const Parrent = () => {
-
+const Loader = () => {
 
   return (
     <div className='loader'>
-
       <l-helix
         size="70"
         speed="1.8"
@@ -17,4 +16,4 @@ const Parrent = () => {
   )
 }
 
-export default Parrent
+export default Loader

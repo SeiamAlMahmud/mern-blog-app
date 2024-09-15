@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import "./HomePage.css"
 import HomePagePost from '../../components/HomePagePost/HomePagePost'
 import { useBlogContext } from '../../context/ContextContainer'
+import Loader from '../../foundation/Loader/Loader'
 
 const HomePage = () => {
   const { api } = useBlogContext()
@@ -49,11 +50,12 @@ const HomePage = () => {
   return (
     <>
       {
-        !loading && posts.map((post) => {
+        loading ? <Loader /> : ( posts.map((post) => {
           return (
             <HomePagePost post={post} key={post._id} />
           )
         })
+        )
       }
 
       {/* Pagination Controls */}

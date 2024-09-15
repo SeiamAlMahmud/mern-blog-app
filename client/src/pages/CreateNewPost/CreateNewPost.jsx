@@ -25,10 +25,10 @@ const CreateNewPost = () => {
   const reactQuillRef = useRef(null);
   const { api } = useBlogContext()
   const navigate = useNavigate()
-  
+
 
   console.log(content)
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("first")
@@ -92,9 +92,16 @@ const CreateNewPost = () => {
             required
             hidden
           />
-          <p style={{color: "red", margin:"3px"}}>Thumnail is required</p>
+          <p style={{
+            color: "red",
+            margin: "3px",
+            visibility: image ? "hidden" : "visible"
+          }}>
+            Thumbnail image is required.
+          </p>
+
         </div>
-       
+
         <ReactQuill
           ref={reactQuillRef}
           theme="snow"
