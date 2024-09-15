@@ -4,9 +4,14 @@ import connectDB from "./DB/MoongoseDB.js"
 import cors from "cors"
 import cookieParser from 'cookie-parser';
 import UserRouter from "./Route/UserRoute.js"
+import path from 'path'
 const app = express()
 
+
+
+
 const port = process.env.PORT || 3000
+const __dirname = path.resolve()
 
 app.use(cors({
     origin: ['http://localhost:5173'] ,
@@ -17,7 +22,7 @@ app.use(cors({
 
 app.use(cookieParser())
 app.use(express.json())
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // EndPoints

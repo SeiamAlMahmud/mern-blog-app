@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import User from '../Models/UserModels.js';
 import generatejwtToken from '../utilities/generateJwtToken.js';
 import Post from '../Models/PostModel.js';
+import path from "path"
 // 
 const registerController = async (req, res) => {
     const { email, username, password } = req.body;
@@ -131,7 +132,7 @@ const createNewPost = async (req, res) => {
         const userId = req.userId;
         console.log(username, userId)
         const image = req.file ? `/uploads/${req.file.filename}` : null;
-       
+
         const post = new Post({
             title,
             summary,
@@ -139,25 +140,34 @@ const createNewPost = async (req, res) => {
             image,
             userId,
             username
-          });
-      if (post) {
-        
-          await post.save();
-          res.status(201).json({success: true, message: "post created successfully.", id: post._id})
-      }
+        });
+        if (post) {
+
+            await post.save();
+            res.status(201).json({ success: true, message: "post created successfully.", id: post._id })
+        }
     } catch (error) {
         console.log(error)
-        res.status(500).json({success: false, message: "Server Error."})
+        res.status(500).json({ success: false, message: "Server Error." })
 
     }
 }
-const getAllPosts = async (req, res)=> {
+const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 });
-        res.json(posts);
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
+        const __dirname = path.resolve()
+        const posts = await Post.find().select("title username summary image").sort({ createdAt: -1 });
+        const updatedPosts = posts.map((post) => {
+            const updatedImage = post.image && __dirname + post.image;
+            return {
+                ...post.toObject(), // Convert Mongoose document to a plain JS object
+                image: updatedImage // Append the full path to the image
+              };
+        })
+        res.status(200).json({success: true, updatedPosts});
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: error.message, error:error });
+    }
 }
 
 export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts };
