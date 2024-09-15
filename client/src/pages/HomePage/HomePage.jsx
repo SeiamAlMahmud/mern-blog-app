@@ -62,25 +62,29 @@ const HomePage = () => {
           onClick={handlePrevPage}
           disabled={currentPage === 1}
           style={{
-            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',
-            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-            color: currentPage === 1 ? '#666' : '#fff',
+            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',  // Grey background if disabled
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',    // Not allowed cursor if disabled
+            color: currentPage === 1 ? '#666' : '#fff',               // Grey text if disabled
           }}
-          >
+        >
           Previous
         </button>
+
         <span>Page {currentPage} of {totalPages}</span>
+
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
           style={{
-            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',
-            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-            color: currentPage === 1 ? '#666' : '#fff',
-          }}>
+            backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',  // Fix here: Check if on last page
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',    // Disable cursor when on last page
+            color: currentPage === totalPages ? '#666' : '#fff',               // Grey text when on last page
+          }}
+        >
           Next
         </button>
       </div>
+
 
     </>
   )

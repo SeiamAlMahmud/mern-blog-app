@@ -7,6 +7,7 @@ import QuillResizeImage from 'quill-resize-image';
 import "./CreateNewPost.css";
 import { useBlogContext } from '../../context/ContextContainer';
 import toast from "react-hot-toast"
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -23,6 +24,7 @@ const CreateNewPost = () => {
   const [files, setFiles] = useState([]);
   const reactQuillRef = useRef(null);
   const { api } = useBlogContext()
+  const navigate = useNavigate()
   
 
   console.log(content)
@@ -41,12 +43,16 @@ const CreateNewPost = () => {
     formData.append('content', content);
     if (image) formData.append('image', image);
 
+    if (!image) {
+      return toast.error("Add thumnail image.")
+    }
     try {
       const response = await api.post('/api/posts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (response.data?.success) {
         toast.success(response.data?.message)
+        navigate("/")
       }
       console.log('Post saved:', response.data);
       // Reset form or redirect user

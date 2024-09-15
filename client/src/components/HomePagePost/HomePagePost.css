@@ -9,6 +9,7 @@
     margin: 0;
     font-size: 2rem;
     width: 100%;
+    cursor: pointer;
 }
 .post__image{
     position: relative;
@@ -33,7 +34,7 @@ div.post__text p.info {
 
 div.post__text p.info .author {
     color: #333 !important;
-
+    cursor: pointer;
 }
 
 div.post__text p.post__summary {
@@ -50,6 +51,7 @@ div.post__text p.post__summary {
 @media (max-width:795px) {
     .post .post__text h2 {
         font-size: 1.5rem;
+        
     }
 }
 @media (max-width:730px) {
