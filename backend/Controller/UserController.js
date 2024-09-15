@@ -152,23 +152,53 @@ const createNewPost = async (req, res) => {
 
     }
 }
+
+
 const getAllPosts = async (req, res) => {
     try {
-        const __dirname = path.resolve()
-        const posts = await Post.find().select("title username summary image").sort({ createdAt: -1 });
+        const __dirname = path.resolve();
+
+        // Get page and limit from query params, default to page 1 and 10 posts per page
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        // console.log(page,limit)
+
+        // Calculate how many posts to skip based on the current page
+        const skip = (page - 1) * limit;
+
+        // Fetch posts with pagination
+        const posts = await Post.find()
+            .select("title username summary image createdAt") // Selecting only necessary fields
+            .sort({ createdAt: -1 }) // Sort by most recent
+            .skip(skip)
+            .limit(limit);
+
+        const totalPosts = await Post.countDocuments(); // Get the total count of posts
+        const totalPages = Math.ceil(totalPosts / limit); // Calculate the total number of pages
+
+        // Format image URLs
         const updatedPosts = posts.map((post) => {
             const baseUrl = req.protocol + '://' + req.get('host');
-            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}` ;
+            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
             return {
                 ...post.toObject(), // Convert Mongoose document to a plain JS object
                 image: updatedImage // Append the full path to the image
-              };
-        })
-        res.status(200).json({success: true, updatedPosts});
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            currentPage: page,
+            totalPages: totalPages,
+            totalPosts: totalPosts,
+            posts: updatedPosts
+        });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: error.message, error:error });
+        console.log(error);
+        res.status(500).json({ message: error.message, error: error });
     }
-}
+};
+
+
 
 export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts };
