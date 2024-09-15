@@ -3,6 +3,7 @@ import "../Authentication.css"
 import { useBlogContext } from '../../../context/ContextContainer'
 import { useNavigate } from 'react-router-dom'
 import 'ldrs/pinwheel'
+import toast from 'react-hot-toast'
 
 const Register = () => {
   const { api, token, setToken,getToken } = useBlogContext()
@@ -42,6 +43,11 @@ const Register = () => {
       }
     } catch (error) {
       console.log(error)
+      if (error.response) {
+        if (!error.response?.data?.success) {
+          toast.error(error.response?.data?.error)
+        }
+      }
     }finally{
       setLoading(false)
     }

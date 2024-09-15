@@ -4,6 +4,7 @@ import { useBlogContext } from '../../../context/ContextContainer'
 import { useNavigate } from "react-router-dom"
 import Loader from '../../../foundation/Loader/Loader'
 import 'ldrs/pinwheel'
+import toast from 'react-hot-toast'
 
 
 
@@ -28,7 +29,7 @@ const Login = () => {
     const value = e.target.value
     setUserData({ ...userData, [name]: value })
   }
-  console.log(userData)
+  // console.log(userData)
 
   const onSubmitHanler = async (e) => {
     e.preventDefault()
@@ -43,6 +44,11 @@ const Login = () => {
 
     } catch (error) {
       console.log(error)
+      if (error.response) {
+        if (!error.response?.data?.success) {
+          toast.error(error.response?.data?.error)
+        }
+      }
     } finally {
       setLoading(false)
     }
