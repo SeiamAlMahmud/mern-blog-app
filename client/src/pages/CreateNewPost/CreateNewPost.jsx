@@ -69,6 +69,7 @@ const CreateNewPost = () => {
           type="text"
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
+          maxLength={160}
           placeholder='Summary.. (within 160 characters)'
           required
         />

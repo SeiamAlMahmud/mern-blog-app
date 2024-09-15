@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import moment from 'moment'; 
 import "./HomePagePost.css";
 
 const HomePagePost = ({post}) => {
 
 
     const [isExpanded, setIsExpanded] = useState(false);
-    const summary = `বৈষম্যবিরোধী ছাত্র আন্দোলনকারীদের হত্যার উদ্দেশ্যেই গুলি করা হয়েছে-এমন মন্তব্য করে আন্তর্জাতিক অপরাধ ট্রাইব্যুনালের চিফ প্রসিকিউটর মোহাম্মদ তাজুল ইসলাম বলেছেন, নিশ্চিত হয়েছি যে, যারা এখানে চিকিৎসা নিচ্ছেন বা নিয়েছে তারা সবাই গানশটে আহত।`;
+    const summary = post.summary
     const maxLength = 160;
 
     const toggleReadMore = () => {
@@ -21,8 +22,8 @@ const HomePagePost = ({post}) => {
             <div className="post__text">
                 <h2>{post.title} </h2>
                 <p className='info'>
-                    <Link className="author link">Seiam Al Mahmud</Link>
-                    <time>2023-01-06</time>
+                    <Link className="author link">{post.username}</Link>
+                    <time>{moment(post.createdAt).format('MM-D-YY, h:mm:ss a')}</time>
                 </p>
                 <p className='post__summary'>
                     {isExpanded ? summary : `${summary.substring(0, maxLength)}...`}
@@ -42,3 +43,6 @@ const HomePagePost = ({post}) => {
 };
 
 export default HomePagePost;
+
+
+// {moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}

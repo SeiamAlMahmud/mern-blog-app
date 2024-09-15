@@ -157,7 +157,8 @@ const getAllPosts = async (req, res) => {
         const __dirname = path.resolve()
         const posts = await Post.find().select("title username summary image").sort({ createdAt: -1 });
         const updatedPosts = posts.map((post) => {
-            const updatedImage = post.image && __dirname + post.image;
+            const baseUrl = req.protocol + '://' + req.get('host');
+            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}` ;
             return {
                 ...post.toObject(), // Convert Mongoose document to a plain JS object
                 image: updatedImage // Append the full path to the image
