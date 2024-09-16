@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import "./Headers.css"
 import { useBlogContext } from '../../context/ContextContainer'
+import { FaArrowUp } from 'react-icons/fa'; 
 
 
 
@@ -25,8 +26,16 @@ const Headers = () => {
         }
 
     }
-    return (
 
+    // Scroll to top function
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'  // Smooth scrolling effect
+        });
+    };
+    return (
+        <>
         <header>
             <Link className='link logo'>M Blog</Link>
             <nav>
@@ -35,7 +44,29 @@ const Headers = () => {
                     onClick={logout}
                     className='link link-sm' >LogOut</p> : <Link className='link link-sm' to={"/register"}>Register</Link>}
             </nav>
+              {/* Top Icon */}
+              <div className='top-icon' onClick={scrollToTop} title="Go to top">
+                    <FaArrowUp />  {/* Arrow-up icon */}
+                </div>
         </header>
+        <ul className='header__ul'>
+            <li>Bangladesh</li>
+            <li>Politics</li>
+            <li>International</li>
+            <li>sports</li>
+            <li>Entertainment</li>
+            <li>Health</li>
+            <li class="dropdown">
+            More <span class="arrow">&#9662;</span>
+            <ul class="dropdown-menu">
+                <li>Heath</li>
+                <li>Religion</li>
+                <li>Health Tips</li>
+                <li>Medical News</li>
+            </ul>
+        </li>
+        </ul>
+        </>
     )
 }
 

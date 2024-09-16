@@ -22,7 +22,7 @@ const HomePage = () => {
         setCurrentPage(response.data?.currentPage);
         setTotalPages(response.data?.totalPages);
       }
-      console.log(response.data.posts)
+      // console.log(response.data.posts)
 
     } catch (error) {
       console.error("Error fetching posts", error);

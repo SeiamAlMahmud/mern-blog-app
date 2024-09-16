@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from 'moment'; 
 import "./HomePagePost.css";
 
@@ -8,7 +8,8 @@ const HomePagePost = ({post}) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
     const summary = post.summary
-    const maxLength = 160;
+    const maxLength = 140;
+    const navigate = useNavigate()
 
     const toggleReadMore = () => {
         setIsExpanded(!isExpanded); // Toggle between expanded and collapsed view
@@ -17,10 +18,10 @@ const HomePagePost = ({post}) => {
     return (
         <div className='post'>
             <div className="post__image">
-                <img src={post.image} alt="" />
+                <img onClick={()=> navigate(`/post/${post._id}`)} src={post.image} alt="" />
             </div>
             <div className="post__text">
-                <h2>{post.title} </h2>
+                <h2 onClick={()=> navigate(`/post/${post._id}`)}>{post.title} </h2>
                 <p className='info'>
                     <Link className="author link">{post.username}</Link>
                     <time>{moment(post.createdAt).format('MM-D-YY, h:mm:ss a')}</time>

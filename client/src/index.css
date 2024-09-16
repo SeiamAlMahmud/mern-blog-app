@@ -7,10 +7,12 @@
 body {
     color: #222;
 }
-
+li{
+    list-style-type: none;
+}
 main {
     padding: 10px 10px;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 

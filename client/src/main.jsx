@@ -14,6 +14,7 @@ import Register from './pages/Authentication/Register/Register.jsx';
 import ContextContainer from './context/ContextContainer.jsx';
 import Parrent from '../test/Parrent.jsx';
 import CreateNewPost from './pages/CreateNewPost/CreateNewPost.jsx';
+import BlogView from './pages/BlogView/BlogView.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />
+      },
+      {
+        path: "/post/:id",
+        element: <BlogView />
       },
       {
         path: "/parrent",

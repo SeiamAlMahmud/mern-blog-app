@@ -199,6 +199,19 @@ const getAllPosts = async (req, res) => {
     }
 };
 
+const getSinglePost = async (req, res) => {
+    try {
+        // console.log(req.params)
+        if (!req.params.id) {
+            return res.status(404).json({ success: false, message: 'Post not found' });
+        }
+        const post = await Post.findById(req.params.id);
+        if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
+        res.status(200).json({ success: true, post });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
-export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts };
+export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost };
