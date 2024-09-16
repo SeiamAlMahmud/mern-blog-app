@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useBlogContext } from '../../context/ContextContainer'
 import "./BlogView.css"
 import Loader from '../../foundation/Loader/Loader'
 import moment from "moment"
-import { GoPlusCircle } from "react-icons/go";
-import { FiMinusCircle } from "react-icons/fi";
 import { IoLink } from "react-icons/io5";
 import { GoZoomIn } from "react-icons/go";
 import { GoZoomOut } from "react-icons/go";
+import toast from "react-hot-toast"
+import ActionAreaCard from '../../components/ActionAreaCard/ActionAreaCard'
 
 
 
 const BlogView = () => {
-  const { api } = useBlogContext()
+
+
+  const { api, website } = useBlogContext()
   const { id } = useParams()
   const [post, setpost] = useState({})
+  const [fourPosts, setFourPosts] = useState([])
   const [loading, setLoading] = useState(false)
   const [fontSize, setFontSize] = useState(16)
+  document.title = post?.title || "News24"
+  const navigate = useNavigate()
 
   const getData = async () => {
     setLoading(true)
@@ -34,11 +39,42 @@ const BlogView = () => {
       setLoading(false)
     }
   }
+
+  const getFourPost = async () => {
+    try {
+    const response = await api.get("/api/randomPost")
+    console.log(response.data)
+      if (response.data?.success) {
+        setFourPosts(response.data?.posts)
+      }
+    } catch (error) {
+      console.log(error.message)
+      console.log(error)
+    }
+  }
+  // Avoid one by one operation, use parrarell operation
+  const pararellOperation = async (req,res)=> {
+    await Promise.all([getData(),getFourPost()])
+  }
   useEffect(() => {
-    getData()
-  }, [])
-  console.log(post)
-  document.title = post?.title || "News24"
+    pararellOperation()
+  }, [id])
+  // console.log(post)
+
+
+  const copyToClipboard = () => {
+    const link = `${website}/post/${post?._id}`;
+    // console.log(link)
+    window.navigator.clipboard.writeText(link).then(
+      () => {
+        toast.success("Copied")
+      },
+      (err) => {
+        console.log("Failed to copied", err)
+      }
+    )
+
+  }
   return (
     <>
       {
@@ -68,25 +104,42 @@ const BlogView = () => {
                 <p>{post?.duration || "Read in 1 minute"}</p>
               </div>
               <div className='part_2'>
-                <i onClick={()=> setFontSize(fontSize + 1)}>
+                <i onClick={() => setFontSize(fontSize + 1)} title="Zoom In">
                   <GoZoomIn />
                 </i>
-                <i onClick={() => setFontSize(fontSize - 1)}>
-                <GoZoomOut />
-              </i>
-                <i>
-                <IoLink />
+                <i onClick={() => setFontSize(fontSize - 1)} title="Zoom Out">
+                  <GoZoomOut />
+                </i>
+                <i onClick={copyToClipboard} title="Copy to clipboard">
+                  <IoLink />
                 </i>
               </div>
             </div>
             <div
-            style={{
-              fontSize: fontSize
-            }} 
-            dangerouslySetInnerHTML={{ __html: post?.content }}></div>
+              style={{
+                fontSize: fontSize
+              }}
+              dangerouslySetInnerHTML={{ __html: post?.content }}></div>
           </div>
         )
       }
+
+     { !loading && <div className='four_post_section'>
+        <div className='four_post_container'>
+          {
+            fourPosts.map(item => {
+              return (
+                <div className='four_post_container' onClick={()=> navigate(`/post/${item._id}`)}>
+                <ActionAreaCard
+                 key={item._id}
+                 item={item}
+                 />
+                 </div>
+              )
+            })
+          }
+        </div>
+      </div>}
     </>
   )
 }

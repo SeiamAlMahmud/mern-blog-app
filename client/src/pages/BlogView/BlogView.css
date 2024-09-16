@@ -78,3 +78,15 @@
 .blogView__section>.name_duration .part_2 i:hover{
     color: #F4483C;
 }
+
+.four_post_section {
+    margin: 4rem 0;
+}
+
+.four_post_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}

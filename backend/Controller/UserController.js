@@ -208,13 +208,100 @@ const getSinglePost = async (req, res) => {
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
         const baseUrl = req.protocol + '://' + req.get('host');
-            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
-            post.image = updatedImage;
+        const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+        post.image = updatedImage;
         res.status(200).json({ success: true, post });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
 
+const getRandomFourWithin = async (req, res) => {
+    try {
+        // Get the current time and 48 hours back
+        const now = new Date();
+        const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
 
-export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost };
+        // Aggregation pipeline
+        const randomPosts = await Post.aggregate([
+            {
+                // Filter posts created within the last 48 hours
+                $match: {
+                    createdAt: { $gte: fortyEightHoursAgo }
+                }
+            },
+            {
+                // Randomly sort the posts
+                $sample: { size: 3 }
+            },
+            {
+                // Only include the title, image, and summary fields
+                $project: {
+                    title: 1,
+                    image: 1,
+                    summary: 1
+                }
+            }
+        ]);
+
+        // If no posts are found, send an empty array
+        if (!randomPosts || randomPosts.length === 0) {
+            return res.status(200).json({ success: true, message: 'No posts found in the last 48 hours.', posts: [] });
+        }
+        const updatedPosts = randomPosts.map((post) => {
+            const baseUrl = req.protocol + '://' + req.get('host');
+            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+            return {
+                ...post, // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
+                image: updatedImage // Append the full path to the image
+            };
+        });
+        // Return the randomly selected posts with only the requested fields
+        return res.status(200).json({ success: true, posts: updatedPosts });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Server Error' });
+    }
+}
+
+
+
+export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin };
+
+
+
+
+// const getRandomFourWithin = async (req, res) => {
+//     try {
+//         // Get the current time and 24 hours back
+//         const now = new Date();
+//         const twentyFourHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+//         // Aggregation pipeline
+//         const randomPosts = await Post.aggregate([
+//             {
+//                 // Filter posts created within the last 24 hours
+//                 $match: {
+//                     createdAt: { $gte: twentyFourHoursAgo }
+//                 }
+//             },
+//             {
+//                 // Randomly sort the posts
+//                 $sample: { size: 4 }
+//             }
+//         ]);
+
+//         // If no posts are found, send an empty array
+//         if (!randomPosts || randomPosts.length === 0) {
+//             return res.status(200).json({ success: true, message: 'No posts found in the last 48 hours.', posts: [] });
+//         }
+
+//         // Return the randomly selected posts
+//         return res.status(200).json({ success: true, posts: randomPosts });
+
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ success: false, message: 'Server Error' });
+//     }
+// }

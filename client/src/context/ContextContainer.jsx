@@ -32,7 +32,8 @@ const ContextContainer = ({ children }) => {
       
         getToken()
     }, [])
-    const content = { api, token, setToken, getToken }
+    const website = "http://localhost:5173"
+    const content = { api, token, setToken, getToken, website }
     return (
         <>
             <blogContext.Provider value={content}>
