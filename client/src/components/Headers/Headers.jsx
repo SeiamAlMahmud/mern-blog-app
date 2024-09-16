@@ -56,9 +56,9 @@ const Headers = () => {
             <li>sports</li>
             <li>Entertainment</li>
             <li>Health</li>
-            <li class="dropdown">
-            More <span class="arrow">&#9662;</span>
-            <ul class="dropdown-menu">
+            <li className="dropdown">
+            More <span className="arrow">&#9662;</span>
+            <ul className="dropdown-menu">
                 <li>Heath</li>
                 <li>Religion</li>
                 <li>Health Tips</li>

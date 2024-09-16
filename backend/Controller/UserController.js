@@ -207,6 +207,9 @@ const getSinglePost = async (req, res) => {
         }
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
+        const baseUrl = req.protocol + '://' + req.get('host');
+            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+            post.image = updatedImage;
         res.status(200).json({ success: true, post });
     } catch (error) {
         res.status(500).json({ message: error.message });

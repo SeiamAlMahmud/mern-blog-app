@@ -75,8 +75,9 @@ const CreateNewPost = () => {
           type="text"
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
-          maxLength={160}
-          placeholder='Summary.. (within 160 characters)'
+          // maxLength={160}
+          placeholder='Summary.. '
+          // placeholder='Summary.. (within 160 characters)'
           required
         />
         <div className='new_post_img_upload'>
