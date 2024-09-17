@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useBlogContext } from '../../context/ContextContainer';
 import Loader from '../../foundation/Loader/Loader';
 import HomePagePost from '../../components/HomePagePost/HomePagePost';
@@ -9,24 +9,32 @@ const Category = () => {
   const { api } = useBlogContext();
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Manage the current page number
-  const [totalPages, setTotalPages] = useState(1);   
-  const [loading, setLoading] = useState(false)
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const pathname = location.pathname;
 
   useEffect(() => {
     getCategoryPosts(currentPage);
-  }, [cateName, currentPage]); // Fetch posts when category or page changes
+  }, [cateName, currentPage, pathname]);
 
   const getCategoryPosts = async (page) => {
-    setLoading(true)
+    setLoading(true);
     try {
+      // Fetch posts from API for the category and page number
       const response = await api.get(`/api/category/${cateName}?page=${page}`);
       console.log(response.data);
-      setPosts(response.data.posts);             // Store the retrieved posts
-      setTotalPages(response.data.totalPages);   // Update the total number of pages
+
+      // Only update posts if there is data; otherwise, keep the previous posts
+      if (response.data.posts && response.data.posts.length > 0) {
+        setPosts((prevPosts) => [...prevPosts, ...response.data.posts]);  // Append new posts to the existing ones
+      }
+
+      setTotalPages(response.data.totalPages);  // Update total pages regardless of posts
     } catch (error) {
       console.error('Error fetching category posts:', error);
-    }finally{
-        setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,14 +54,13 @@ const Category = () => {
 
   return (
     <>
-      {
-        loading ? <Loader /> : ( posts.map((post) => {
-          return (
-            <HomePagePost post={post} key={post._id} />
-          )
+      {loading ? (
+        <Loader />
+      ) : (
+        posts.map((post) => {
+          return <HomePagePost post={post} key={post._id} />;
         })
-        )
-      }
+      )}
 
       {/* Pagination Controls */}
       <div className="pagination-controls">
@@ -61,32 +68,32 @@ const Category = () => {
           onClick={handlePrevPage}
           disabled={currentPage === 1}
           style={{
-            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',  // Grey background if disabled
-            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',    // Not allowed cursor if disabled
-            color: currentPage === 1 ? '#666' : '#fff',               // Grey text if disabled
+            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+            color: currentPage === 1 ? '#666' : '#fff',
           }}
         >
           Previous
         </button>
 
-        <span>Page {currentPage} of {totalPages}</span>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
 
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
           style={{
-            backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',  // Fix here: Check if on last page
-            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',    // Disable cursor when on last page
-            color: currentPage === totalPages ? '#666' : '#fff',               // Grey text when on last page
+            backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+            color: currentPage === totalPages ? '#666' : '#fff',
           }}
         >
           Next
         </button>
       </div>
-
-
     </>
-  )
+  );
 };
 
 export default Category;

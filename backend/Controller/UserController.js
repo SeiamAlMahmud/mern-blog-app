@@ -289,7 +289,7 @@ const getCategoryPosts = async (req, res) => {
         .select('title username createdAt summary image')  // Only return specific fields
         .skip((pageNum - 1) * limitNum)              // Skip posts for previous pages
         .limit(limitNum);                            // Limit the number of posts returned
-  
+     
       const totalPosts = await Post.countDocuments({
         category: { $regex: category, $options: 'i' },
         category: { $exists: true, $ne: null }
@@ -316,6 +316,9 @@ const getCategoryPosts = async (req, res) => {
       res.status(500).json({ success: false, message: 'Server Error' });
     }
   };
+
+
+  
 
 export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 

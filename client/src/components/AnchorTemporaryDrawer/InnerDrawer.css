@@ -1,0 +1,70 @@
+
+  .account-section {
+    padding: 16px;
+  }
+  
+  .category-section {
+    padding: 16px;
+    overflow-y: auto;
+    max-height: 300px;
+  }
+  
+  .logout-section {
+    padding: 16px;
+    text-align: center;
+  }
+
+  .hamburger-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #333;
+}
+
+
+
+
+/* Styles for the inner drawer */
+.inner-drawer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 260px;
+  }
+  
+  /* Account section with buttons */
+  .account-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+  }
+  
+  .account-button {
+    width: 48%; 
+    font-size: 10px !important;
+    background-color: #F4483C !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+  }
+  .account-button:hover{
+    background-color: #ef2011 !important;
+
+  }
+  
+  /* Category section with scrolling */
+  .category-section {
+    padding: 16px;
+    overflow-y: auto;
+    max-height: 300px;
+  }
+  
+  /* Logout button full width */
+  .logout-section {
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .logout-button {
+    width: 100%; /* Full width button for logout */
+  }
+  

@@ -11,6 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { GiHamburgerMenu } from "react-icons/gi";
+import InnerDrawer from './InnerDrawer';
 
 
 
@@ -74,7 +75,8 @@ export default function AnchorTemporaryDrawer() {
             open={state[anchor]}
             onClose={toggleDrawer(anchor, false)}
           >
-            {list(anchor)}
+            {/* {list(anchor)} */}
+            <InnerDrawer />
           </Drawer>
         </React.Fragment>
     </div>
