@@ -127,17 +127,23 @@ const createNewPost = async (req, res) => {
 
     try {
 
-        const { title, summary, content } = req.body;
+        const { title, summary, content, keywords, category, readingTime, isPublished, imageTitle } = req.body;
         const username = req.username;
         const userId = req.userId;
         console.log(username, userId)
         const image = req.file ? `/uploads/${req.file.filename}` : null;
 
         const post = new Post({
+
             title,
             summary,
             content,
+            keywords: keywords ? JSON.parse(keywords) : [],
+            category,
+            readingTime,
+            imageTitle,
             image,
+            isPublished,
             userId,
             username
         });
@@ -305,3 +311,5 @@ export { registerController, loginController, logout, UserCheck, createNewPost, 
 //         return res.status(500).json({ success: false, message: 'Server Error' });
 //     }
 // }
+
+// ami models dicchi, sei onujayi kaj korba. akon create new post ee amk models onu jayi input gula new kore banai diba,  and  backend taw thik kore diba. akon shunu create new post ee.. keyword er jonn ekta input banaba. user jokonn typing korbe tokon and jokon comma dibe tokon input ee sei words gula separate korba,  lagbe backend color diba. and keywords er pashe ekta cross icon diba. cross icon ee click korle keyword ta input tag theke remove hobe and keyboards diyeo remove kora jabe

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import Headers from '../components/Headers/Headers'
 import { Outlet, useLocation } from 'react-router-dom'
+import Footer from '../components/Footer/Footer'
 
 const Root = () => {
   const location = useLocation()
@@ -9,9 +10,10 @@ const Root = () => {
   },[location.pathname])
   return (
     <div>
-      <main>
         <Headers />
+      <main>
         <Outlet />
+        <Footer />
       </main>
     </div>
   )

@@ -10,9 +10,31 @@
     height: 120px;
     width: auto;
 }
+/* Add styling for the new input fields */
+.create__post input[type="text"],
+.create__post input[type="number"] {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+select {
+    padding: 8px;
+}
+
+.create__post input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.create__post input[type="number"]::-webkit-inner-spin-button,
+.create__post input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 .ql-editor {
-    height: calc(70vh - 100px) !important;
+    height: calc(80vh - 100px) !important;
 }
 
 .create__post input{

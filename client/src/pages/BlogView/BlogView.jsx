@@ -24,6 +24,8 @@ const BlogView = () => {
   document.title = post?.title || "News24"
   const navigate = useNavigate()
 
+
+  console.log(post)
   const getData = async () => {
     setLoading(true)
     try {
@@ -42,8 +44,8 @@ const BlogView = () => {
 
   const getFourPost = async () => {
     try {
-    const response = await api.get("/api/randomPost")
-    console.log(response.data)
+      const response = await api.get("/api/randomPost")
+      console.log(response.data)
       if (response.data?.success) {
         setFourPosts(response.data?.posts)
       }
@@ -53,8 +55,8 @@ const BlogView = () => {
     }
   }
   // Avoid one by one operation, use parrarell operation
-  const pararellOperation = async (req,res)=> {
-    await Promise.all([getData(),getFourPost()])
+  const pararellOperation = async (req, res) => {
+    await Promise.all([getData(), getFourPost()])
   }
   useEffect(() => {
     pararellOperation()
@@ -83,7 +85,7 @@ const BlogView = () => {
             <div className='blog__general_top'>
               <p className='general_line'>Full News Time</p>
               <div className='category_time'>
-                <p className='category'>{post?.category || "Bangladesh"}</p>
+                <p className='category'>{post?.category}</p>
                 <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
               </div>
             </div>
@@ -96,12 +98,12 @@ const BlogView = () => {
             </div>
             <div className='blogviw_Thumbnail'>
               <img src={post.image} alt="" />
-              <p className='thumbnail_description'>{post?.imgTitle || "যাত্রাবিরতির দাবিতে ঢাকা-ময়মনসিংহ রেলপথে কমিউটার ট্রেন আটকে স্থানীয়দের বিক্ষোভ। ছবি: সময় সংবাদ "}</p>
+              <p className='thumbnail_description'>{post?.imageTitle}</p>
             </div>
             <div className='name_duration'>
               <div className='part_1'>
                 <p>{post?.username}</p>
-                <p>{post?.duration || "Read in 1 minute"}</p>
+                <p>{post?.readingTime}{post?.readingTime == 1 ? "minute" : "minutes"} in Read</p>
               </div>
               <div className='part_2'>
                 <i onClick={() => setFontSize(fontSize + 1)} title="Zoom In">
@@ -120,21 +122,30 @@ const BlogView = () => {
                 fontSize: fontSize
               }}
               dangerouslySetInnerHTML={{ __html: post?.content }}></div>
+            <div className='keywords__section'>
+              {
+                post?.keywords && post?.keywords.map((item, idx) => {
+                  return (
+                    <p key={idx}>{item}</p>
+                  )
+                })
+              }
+            </div>
           </div>
         )
       }
 
-     { !loading && <div className='four_post_section'>
+      {!loading && <div className='four_post_section'>
         <div className='four_post_container'>
           {
             fourPosts.map(item => {
               return (
-                <div className='four_post_container' onClick={()=> navigate(`/post/${item._id}`)}>
-                <ActionAreaCard
-                 key={item._id}
-                 item={item}
-                 />
-                 </div>
+                <div className='four_post_container' onClick={() => navigate(`/post/${item._id}`)}>
+                  <ActionAreaCard
+                    key={item._id}
+                    item={item}
+                  />
+                </div>
               )
             })
           }
