@@ -85,7 +85,7 @@ const BlogView = () => {
             <div className='blog__general_top'>
               <p className='general_line'>Full News Time</p>
               <div className='category_time'>
-                <p className='category'>{post?.category}</p>
+                <p className='category' onClick={()=> navigate(`/category/${post?.category}`)}>{post?.category}</p>
                 <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
               </div>
             </div>

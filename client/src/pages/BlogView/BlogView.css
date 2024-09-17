@@ -16,6 +16,7 @@
 }
 
 .category_time>.category {
+    cursor: pointer;
     color: #F4483C;
     font-weight: 760;
     font-size: 18px;

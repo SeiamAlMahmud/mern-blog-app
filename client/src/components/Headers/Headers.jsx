@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import "./Headers.css"
 import { useBlogContext } from '../../context/ContextContainer'
 import { FaArrowUp } from 'react-icons/fa'; 
+import AnchorTemporaryDrawer from '../AnchorTemporaryDrawer/AnchorTemporaryDrawer';
 
 
 
@@ -43,6 +44,7 @@ const Headers = () => {
                 {token ? <p
                     onClick={logout}
                     className='link link-sm' >LogOut</p> : <Link className='link link-sm' to={"/register"}>Register</Link>}
+                    <AnchorTemporaryDrawer />
             </nav>
               {/* Top Icon */}
               <div className='top-icon' onClick={scrollToTop} title="Go to top">
