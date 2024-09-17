@@ -20,7 +20,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #ccc;
     padding-bottom: 15px;
 }
 
@@ -97,7 +96,7 @@
         padding-top: 10px;
         border-radius: 10px 10px 0px 0px;
     }
-    .last_section{
+    .last_container{
         flex-direction: column;
         gap: 10px;
     }    
@@ -113,7 +112,7 @@
     .app_download_container>.part_1>.app>.apple {
         width: 180px;
     }
-    .last_section{
+    .last_container{
         font-size: 11px;
     }
 }
@@ -132,7 +131,7 @@
    
 }
 
-.last_section{
+.last_container{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -141,7 +140,7 @@
     color: #ccc;
 }
 
-.last_section ul {
+.last_container ul {
     display: flex; 
     gap: 20px;
 }

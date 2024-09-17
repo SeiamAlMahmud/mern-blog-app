@@ -13,8 +13,9 @@ const Root = () => {
         <Headers />
       <main>
         <Outlet />
-        <Footer />
       </main>
+        <Footer />
+      
     </div>
   )
 }

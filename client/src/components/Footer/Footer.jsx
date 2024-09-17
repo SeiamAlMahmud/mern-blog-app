@@ -13,6 +13,7 @@ import { FaXTwitter } from "react-icons/fa6";
 const Footer = () => {
     return (
         <>
+        <main>
             <div>
                 <div className='footer_first_part'>
                     <img src={logo} alt="" />
@@ -44,16 +45,22 @@ const Footer = () => {
                             </i>
                         </div>
                     </div>
-                   
                 </div>
-                <div className="last_section">
-                        <ul>
-                            <li>About us</li>
-                            <li>Privacy & Policy</li>
-                            <li>Contact us</li>
-                        </ul>
-                        <div><p>{new Date().getFullYear()} News24 Media Limited | All rights reserved</p></div>
-                    </div>
+            </div>
+            </main>
+
+
+            <div style={{backgroundColor: "#333333", marginTop: "0"}}>
+            <main>
+            <div className="last_container">
+                <ul>
+                    <li>About us</li>
+                    <li>Privacy & Policy</li>
+                    <li>Contact us</li>
+                </ul>
+                <div><p>{new Date().getFullYear()} News24 Media Limited | All rights reserved</p></div>
+            </div>
+            </main>
             </div>
         </>
     )
