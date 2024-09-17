@@ -15,6 +15,7 @@ import ContextContainer from './context/ContextContainer.jsx';
 import Parrent from '../test/Parrent.jsx';
 import CreateNewPost from './pages/CreateNewPost/CreateNewPost.jsx';
 import BlogView from './pages/BlogView/BlogView.jsx';
+import Category from './pages/Category/Category.jsx';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/post/:id",
         element: <BlogView />
+      },
+      {
+        path: "/category/:cateName",
+        element: <Category />
       },
       {
         path: "/parrent",

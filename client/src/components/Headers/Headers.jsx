@@ -56,11 +56,10 @@ const Headers = () => {
             <li>sports</li>
             <li>Entertainment</li>
             <li>Health</li>
+            <li>Religion</li>
             <li className="dropdown">
             More <span className="arrow">&#9662;</span>
             <ul className="dropdown-menu">
-                <li>Heath</li>
-                <li>Religion</li>
                 <li>Health Tips</li>
                 <li>Medical News</li>
             </ul>

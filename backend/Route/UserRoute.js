@@ -1,5 +1,5 @@
 import express from "express"
-import { UserCheck, createNewPost, getAllPosts, getRandomFourWithin, getSinglePost, loginController, logout, registerController } from "../Controller/UserController.js"
+import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, loginController, logout, registerController } from "../Controller/UserController.js"
 import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
@@ -44,6 +44,6 @@ router.post('/posts',authMiddleware,upload.single('image'),createNewPost)
 router.get('/getAllPosts',getAllPosts)
 router.get('/post/:id',getSinglePost);
 router.get('/randomPost',getRandomFourWithin);
-
+router.get('/category/:category', getCategoryPosts)
 
 export default router

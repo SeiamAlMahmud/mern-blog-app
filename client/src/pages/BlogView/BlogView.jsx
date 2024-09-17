@@ -25,7 +25,7 @@ const BlogView = () => {
   const navigate = useNavigate()
 
 
-  console.log(post)
+  // console.log(post)
   const getData = async () => {
     setLoading(true)
     try {

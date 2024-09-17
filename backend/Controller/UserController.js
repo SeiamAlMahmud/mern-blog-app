@@ -3,6 +3,7 @@ import User from '../Models/UserModels.js';
 import generatejwtToken from '../utilities/generateJwtToken.js';
 import Post from '../Models/PostModel.js';
 import path from "path"
+import { error } from 'console';
 // 
 const registerController = async (req, res) => {
     const { email, username, password } = req.body;
@@ -271,9 +272,55 @@ const getRandomFourWithin = async (req, res) => {
     }
 }
 
+const getCategoryPosts = async (req, res) => {
+    try {
+      const { category } = req.params;
+      const { page = 1, limit = 5 } = req.query; // Default to page 1, 5 posts per page
+  
+      // Convert page and limit to integers
+      const pageNum = parseInt(page, 10);
+      const limitNum = parseInt(limit, 10);
+  
+      // Find posts where category matches (case-insensitive) and select only title, username, createdAt, and summary
+      const posts = await Post.find({
+        category: { $regex: category, $options: 'i' },
+        category: { $exists: true, $ne: null }
+      })
+        .select('title username createdAt summary image')  // Only return specific fields
+        .skip((pageNum - 1) * limitNum)              // Skip posts for previous pages
+        .limit(limitNum);                            // Limit the number of posts returned
+  
+      const totalPosts = await Post.countDocuments({
+        category: { $regex: category, $options: 'i' },
+        category: { $exists: true, $ne: null }
+      });
+  
+      const totalPages = Math.ceil(totalPosts / limitNum); // Calculate total pages
+
+      const updatedPosts = posts.map((post) => {
+        const baseUrl = req.protocol + '://' + req.get('host');
+        const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+        return {
+            ...post.toObject(), // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
+            image: updatedImage // Append the full path to the image
+        };
+    });
+      res.status(200).json({
+        success: true,
+        posts:updatedPosts,
+        totalPages,  // Return the total number of pages
+        currentPage: pageNum
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server Error' });
+    }
+  };
+
+export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
 
-export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin };
+
 
 
 
@@ -311,5 +358,3 @@ export { registerController, loginController, logout, UserCheck, createNewPost, 
 //         return res.status(500).json({ success: false, message: 'Server Error' });
 //     }
 // }
-
-// ami models dicchi, sei onujayi kaj korba. akon create new post ee amk models onu jayi input gula new kore banai diba,  and  backend taw thik kore diba. akon shunu create new post ee.. keyword er jonn ekta input banaba. user jokonn typing korbe tokon and jokon comma dibe tokon input ee sei words gula separate korba,  lagbe backend color diba. and keywords er pashe ekta cross icon diba. cross icon ee click korle keyword ta input tag theke remove hobe and keyboards diyeo remove kora jabe
