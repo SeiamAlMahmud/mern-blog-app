@@ -27,7 +27,7 @@ header {
     padding: 10px;
     border-radius: 20%;
     position: fixed;
-    bottom: -700%;
+    bottom: -750%;
     right: 23px;
     z-index: 1100;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

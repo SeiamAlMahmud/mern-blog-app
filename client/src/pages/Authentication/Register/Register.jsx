@@ -4,6 +4,7 @@ import { useBlogContext } from '../../../context/ContextContainer'
 import { useNavigate } from 'react-router-dom'
 import 'ldrs/pinwheel'
 import toast from 'react-hot-toast'
+import CircularIndeterminate from '../../../foundation/Loader/CircularIndeterminate'
 
 const Register = () => {
   const { api, token, setToken,getToken } = useBlogContext()
@@ -77,13 +78,8 @@ const Register = () => {
           required />
         <button type='submit'
          disabled={loading}
-         style={{backgroundColor: loading && '#d83a3a' }}
-         >{loading ? <l-pinwheel
-          size="18"
-          stroke="3.5"
-          speed="0.9"
-          color="white"
-        ></l-pinwheel> : "Register"}</button>
+         style={{ backgroundColor: loading && '#d83a3a', textAlign: "center",  display: "flex", justifyContent: "center", alignItems: "center", padding: "10px" }}
+         >{loading ?<CircularIndeterminate /> : "Register"}</button>
       </form>)}
     </>
   )

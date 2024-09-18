@@ -10,7 +10,7 @@ const ContextContainer = ({ children }) => {
     // console.log('CHILDREN', children)
     const [token, setToken] = useState(false)
     const api = axios.create({
-        baseURL: "http://localhost:3000",  // Backend URL
+        baseURL: "https://newsserver.almahmud.top",  // Backend URL
         withCredentials: true
     });
     const getToken = async () => {
@@ -32,7 +32,7 @@ const ContextContainer = ({ children }) => {
       
         getToken()
     }, [])
-    const website = "http://localhost:5173"
+    const website = "https://news.almahmud.top"
     const content = { api, token, setToken, getToken, website }
     return (
         <>

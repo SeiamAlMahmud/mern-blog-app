@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000
 const __dirname = path.resolve()
 
 app.use(cors({
-    origin: ['http://localhost:5173'] ,
+    origin: ['http://localhost:5173','https://news.almahmud.top'] ,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'], // 'multipart/form-data' and 'image/*'
     credentials: true, 

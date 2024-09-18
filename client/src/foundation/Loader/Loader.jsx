@@ -1,16 +1,14 @@
 import React from 'react'
 import 'ldrs/helix'
 import "./Loader.css"
+import CustomizedProgressBars from './CustomizedProgressBars'
 
 const Loader = () => {
 
   return (
     <div className='loader'>
-      <l-helix
-        size="70"
-        speed="1.8"
-        color="#B60053"
-      ></l-helix>
+    <CustomizedProgressBars size={80}/>
+    
 
     </div>
   )

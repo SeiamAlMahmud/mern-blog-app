@@ -4,7 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index",
+    "start": "node entry.cjs",
+    "server": "nodemon entry.cjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

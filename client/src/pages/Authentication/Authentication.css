@@ -2,6 +2,11 @@ form.login,
 form.register {
     max-width: 400px;
     margin: 0 auto;
+    height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 form.login input,

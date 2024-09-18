@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Loader from '../../../foundation/Loader/Loader'
 import 'ldrs/pinwheel'
 import toast from 'react-hot-toast'
+import CircularIndeterminate from '../../../foundation/Loader/CircularIndeterminate'
 
 
 
@@ -76,13 +77,8 @@ const Login = () => {
 
         <button type='submit'
           disabled={loading}
-          style={{ backgroundColor: loading && '#d83a3a' }}
-        >{loading ? <l-pinwheel
-          size="18"
-          stroke="3.5"
-          speed="0.9"
-          color="white"
-        ></l-pinwheel> : "Login"}</button>
+          style={{ backgroundColor: loading && '#d83a3a', textAlign: "center",  display: "flex", justifyContent: "center", alignItems: "center", padding: "10px" }}
+        >{loading ? <CircularIndeterminate /> : "Login"}</button>
       </form>)}
     </>
   )
