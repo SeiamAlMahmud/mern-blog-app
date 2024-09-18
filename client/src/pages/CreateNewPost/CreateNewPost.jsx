@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import dlImg from "../../assets/upload_area.png";
@@ -6,7 +6,7 @@ import QuillResizeImage from 'quill-resize-image';
 import "./CreateNewPost.css";
 import { useBlogContext } from '../../context/ContextContainer';
 import toast from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
 
 // Register the image resize module with Quill
@@ -18,13 +18,24 @@ const CreateNewPost = () => {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [keywords, setKeywords] = useState([]);
-  const [inputValue, setInputValue] = useState(""); // For keyword input field
-  const [category, setCategory] = useState(""); // New input for category
-  const [readingTime, setReadingTime] = useState(""); // New input for reading time
-  const [imageTitle, setImageTitle] = useState(""); // New input for image title
+  const [inputValue, setInputValue] = useState("");
+  const [category, setCategory] = useState("");
+  const [readingTime, setReadingTime] = useState(""); 
+  const [imageTitle, setImageTitle] = useState(""); 
   const reactQuillRef = useRef(null);
-  const { api } = useBlogContext();
+  const { api, token } = useBlogContext();
   const navigate = useNavigate();
+  const location = useLocation()
+
+
+
+  useEffect(()=> {
+    if (!token) {
+        return navigate("/login", {state:{from: location.pathname}})
+    }
+   },[token])
+
+
   // Handle keyword input
   const handleKeywordInput = (e) => {
     const value = e.target.value;
