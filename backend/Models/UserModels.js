@@ -6,11 +6,11 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true},
     role: { type: String, default: "user"},
     image: { type: String },
-    posts: {
+    posts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-      }
+        ref: "Post",
+        default: []
+      }]
 })
 
 const User = mongoose.model("user", userSchema)

@@ -29,6 +29,7 @@ const BlogView = () => {
       const response = await api.get(`/api/post/${id}`);
       if (response.data?.success) {
         setPost(response.data?.post);
+        console.log(response.data)
       }
     } catch (error) {
       console.log(error.message);

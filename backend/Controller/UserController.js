@@ -4,6 +4,8 @@ import generatejwtToken from '../utilities/generateJwtToken.js';
 import Post from '../Models/PostModel.js';
 import path from "path"
 import { error } from 'console';
+import checkOwnerShip from '../utilities/checkOwnerShip.js';
+
 // 
 const registerController = async (req, res) => {
     const { email, username, password } = req.body;
@@ -148,9 +150,13 @@ const createNewPost = async (req, res) => {
             userId,
             username
         });
-        if (post) {
 
-            await post.save();
+        const user = await User.findById(userId)
+        if (post) {
+            user.posts.push(post._id)
+            
+            await Promise.all([post.save(),user.save()])
+
             res.status(201).json({ success: true, message: "post created successfully.", id: post._id })
         }
     } catch (error) {
@@ -217,7 +223,13 @@ const getSinglePost = async (req, res) => {
         const baseUrl = req.protocol + '://' + req.get('host');
         const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
         post.image = updatedImage;
-        res.status(200).json({ success: true, post });
+
+         // Ensure the userId is not null before checking ownership
+         const isOwner = post.userId ? await checkOwnerShip(req, post.userId) : false;
+
+         res.status(200).json({ success: true, owner: isOwner, post });
+      
+        // res.status(200).json({ success: true, post });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

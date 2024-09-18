@@ -20,7 +20,7 @@ const CreateNewPost = () => {
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [category, setCategory] = useState("");
-  const [readingTime, setReadingTime] = useState(""); 
+  const [readingTime, setReadingTime] = useState("1"); 
   const [imageTitle, setImageTitle] = useState(""); 
   const reactQuillRef = useRef(null);
   const { api, token } = useBlogContext();
@@ -63,10 +63,10 @@ const CreateNewPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (summary.length > 160) {
-      toast.error('Summary should be within 160 characters');
-      return;
-    }
+    // if (summary.length > 160) {
+    //   toast.error('Summary should be within 160 characters');
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append('title', title);

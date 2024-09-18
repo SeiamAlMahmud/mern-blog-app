@@ -14,7 +14,7 @@ const PostSchema = new mongoose.Schema({
   imageTitle: { type: String },
   keywords: [{ type: String }],
   category: { type: String, required: true },
-  readingTime: { type: Number, required: true },
+  readingTime: { type: Number, required: true , default: 1},
   isPublished: { type: Boolean, default: true }
 }, { timestamps: true });
 
