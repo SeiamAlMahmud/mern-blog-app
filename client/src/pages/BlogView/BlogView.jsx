@@ -17,9 +17,9 @@ const BlogView = () => {
   const [loading, setLoading] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentUtterance, setCurrentUtterance] = useState(null);
   const [highlightedText, setHighlightedText] = useState('');
   const [speechInstance, setSpeechInstance] = useState(null);
+
   document.title = post?.title || "News24";
   const navigate = useNavigate();
 
@@ -78,30 +78,31 @@ const BlogView = () => {
     setSpeechInstance(synth);
   }, []);
 
+  // Function to strip HTML tags and convert to plain text
+  const stripHtmlTags = (html) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  // Add slight pauses for line breaks
+  const prepareTextForSpeech = (text) => {
+    return text.replace(/\n/g, '. ').replace(/  +/g, ' '); // Replace newlines with a pause and clean up extra spaces
+  };
+
   // Play text-to-speech
   const playSpeech = () => {
     if (speechInstance && post.content) {
-      const utterance = new SpeechSynthesisUtterance(post.content);
+      const plainText = stripHtmlTags(post.content); // Convert HTML content to plain text
+      const preparedText = prepareTextForSpeech(plainText); // Handle line breaks and prepare text for speech
+
+      const utterance = new SpeechSynthesisUtterance(preparedText);
       utterance.lang = post.language || 'en'; // Adjust based on content language
       utterance.onstart = () => {
         setIsPlaying(true);
-        setCurrentUtterance(utterance);
       };
       utterance.onend = () => {
         setIsPlaying(false);
-        setCurrentUtterance(null);
-      };
-      utterance.onboundary = (event) => {
-        if (event.name === 'word') {
-          setHighlightedText(prevText => {
-            // Highlight words being spoken
-            const words = post.content.split(' ');
-            const highlighted = words.map((word, index) => (
-              `<span key=${index} class="${event.charIndex === index ? 'highlight' : ''}">${word}</span>`
-            )).join(' ');
-            return highlighted;
-          });
-        }
       };
       speechInstance.speak(utterance);
     }
@@ -109,10 +110,9 @@ const BlogView = () => {
 
   // Stop text-to-speech
   const stopSpeech = () => {
-    if (speechInstance && currentUtterance) {
+    if (speechInstance) {
       speechInstance.cancel();
       setIsPlaying(false);
-      setCurrentUtterance(null);
     }
   };
 
@@ -153,13 +153,14 @@ const BlogView = () => {
               </i>
             </div>
           </div>
-          <div className='post-content'
-            style={{ fontSize: `${fontSize}px` }}
-            dangerouslySetInnerHTML={{ __html: highlightedText || post?.content || '' }}>
-          </div>
           <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
             {isPlaying ? 'Stop' : 'Play'} Speech
           </button>
+          <div className='post-content'
+            style={{ fontSize: `${fontSize}px` }}
+            dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
+          </div>
+      
           <div className='keywords__section'>
             {post?.keywords && post?.keywords.map((item, idx) => (
               <p key={idx}>{item}</p>

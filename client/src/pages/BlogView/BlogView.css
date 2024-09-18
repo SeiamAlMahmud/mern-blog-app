@@ -161,3 +161,19 @@
         font-size: 2.5rem;
     }
 }
+
+.play-speech-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background-color: #F4483C;
+    color: #fff;
+    border-radius: 5px;
+  }
+  
+  .highlight {
+    background-color: yellow;
+  }
+  
