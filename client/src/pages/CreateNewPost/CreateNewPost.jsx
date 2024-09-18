@@ -25,7 +25,6 @@ const CreateNewPost = () => {
   const reactQuillRef = useRef(null);
   const { api } = useBlogContext();
   const navigate = useNavigate();
-
   // Handle keyword input
   const handleKeywordInput = (e) => {
     const value = e.target.value;
@@ -81,7 +80,35 @@ const CreateNewPost = () => {
       console.error('Error saving post:', error);
     }
   };
-
+  const CategoryList = [
+    {
+      name: "Bangladesh"
+    },
+    {
+      name: "Politics"
+    },
+    {
+      name: "International"
+    },
+    {
+      name: "sports"
+    },
+    {
+      name: "Entertainment"
+    },
+    {
+      name: "Health"
+    },
+    {
+      name: "Religion"
+    },
+    {
+      name: "Health Tips"
+    },
+    {
+      name: "Medical News"
+    }
+  ]
   return (
     <form onSubmit={handleSubmit}>
       <div className='create__post'>
@@ -105,7 +132,7 @@ const CreateNewPost = () => {
           {keywords.map((keyword, index) => (
             <span className="keyword__tag" key={index}>
               {keyword}
-              <span className="remove__keyword" onClick={() => removeKeyword(index)} style={{color: "red", marginLeft: "4px"}}><RxCross2 /></span>
+              <span className="remove__keyword" onClick={() => removeKeyword(index)} style={{ color: "red", marginLeft: "4px" }}><RxCross2 /></span>
             </span>
           ))}
           <input
@@ -118,13 +145,19 @@ const CreateNewPost = () => {
         </div>
 
         {/* Category Dropdown */}
-        <select 
+        <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
         >
           <option value="" disabled>Select category</option>
-          <option value="bangladesh">Bangladesh</option>
+          {
+            CategoryList.map((item,idx)=> {
+              return (
+                <option key={idx} value={item?.name}>{item?.name}</option>
+              )
+            })
+          }
           <option value="sports">Sports</option>
           <option value="international">International</option>
           <option value="health">Health</option>
