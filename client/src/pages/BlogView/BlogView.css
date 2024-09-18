@@ -178,3 +178,38 @@
     background-color: yellow;
   }
   
+  /* BlogView.css */
+
+/* Custom Progress Bar */
+.progress-container {
+    position: relative;
+    width: 80%;
+    height: 10px;
+    margin: 20px auto;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #3f51b5;
+    transition: width 0.2s;
+  }
+  
+  /* Speech Rate Controls */
+  .speech-controls {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .speech-rate-slider {
+    width: 80%;
+    margin: auto;
+  }
+  
+  .speech-rate-label {
+    margin: 10px;
+  }
+  

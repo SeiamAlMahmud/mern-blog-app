@@ -17,10 +17,9 @@ const BlogView = () => {
   const [loading, setLoading] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [highlightedText, setHighlightedText] = useState('');
   const [speechInstance, setSpeechInstance] = useState(null);
+  const [currentUtterance, setCurrentUtterance] = useState(null);
 
-  document.title = post?.title || "News24";
   const navigate = useNavigate();
 
   // Fetch post data
@@ -59,6 +58,21 @@ const BlogView = () => {
     pararellOperation();
   }, [id]);
 
+  // Initialize SpeechSynthesis and handle page changes
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    setSpeechInstance(synth);
+
+    // Stop speech if the page changes
+    return () => {
+      if (synth) {
+        synth.cancel();
+        setIsPlaying(false);
+        setCurrentUtterance(null);
+      }
+    };
+  }, [id]);
+
   // Copy URL to clipboard
   const copyToClipboard = () => {
     const link = `${website}/post/${post?._id}`;
@@ -72,12 +86,6 @@ const BlogView = () => {
     );
   };
 
-  // Initialize SpeechSynthesis
-  useEffect(() => {
-    const synth = window.speechSynthesis;
-    setSpeechInstance(synth);
-  }, []);
-
   // Function to strip HTML tags and convert to plain text
   const stripHtmlTags = (html) => {
     const tmp = document.createElement('div');
@@ -85,25 +93,44 @@ const BlogView = () => {
     return tmp.textContent || tmp.innerText || '';
   };
 
-  // Add slight pauses for line breaks
+  // Prepare text for speech by adding slight pauses for line breaks
   const prepareTextForSpeech = (text) => {
     return text.replace(/\n/g, '. ').replace(/  +/g, ' '); // Replace newlines with a pause and clean up extra spaces
   };
 
-  // Play text-to-speech
+  // Play text-to-speech from the beginning
   const playSpeech = () => {
     if (speechInstance && post.content) {
       const plainText = stripHtmlTags(post.content); // Convert HTML content to plain text
       const preparedText = prepareTextForSpeech(plainText); // Handle line breaks and prepare text for speech
 
+      // Stop the current speech if it is playing
+      if (currentUtterance) {
+        speechInstance.cancel();
+        setIsPlaying(false);
+      }
+
       const utterance = new SpeechSynthesisUtterance(preparedText);
       utterance.lang = post.language || 'en'; // Adjust based on content language
+      setCurrentUtterance(utterance);
+
       utterance.onstart = () => {
         setIsPlaying(true);
       };
+
       utterance.onend = () => {
         setIsPlaying(false);
+        setCurrentUtterance(null);
       };
+
+      utterance.onpause = () => {
+        setIsPlaying(false);
+      };
+
+      utterance.onresume = () => {
+        setIsPlaying(true);
+      };
+
       speechInstance.speak(utterance);
     }
   };
@@ -113,6 +140,7 @@ const BlogView = () => {
     if (speechInstance) {
       speechInstance.cancel();
       setIsPlaying(false);
+      setCurrentUtterance(null);
     }
   };
 
@@ -153,9 +181,11 @@ const BlogView = () => {
               </i>
             </div>
           </div>
+
           <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
-            {isPlaying ? 'Stop' : 'Play'} Speech
+            {isPlaying ? 'Stop Speech' : 'Play Speech'}
           </button>
+
           <div className='post-content'
             style={{ fontSize: `${fontSize}px` }}
             dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
@@ -183,7 +213,3 @@ const BlogView = () => {
 };
 
 export default BlogView;
-
-
-
-//    ekhane 2 ta jinis imrpvement kora lagbe. 1. page er pathname change hole play button automatically stop hoye jabe.  and jokon doro onakkhon play holo, ami pause korlam. abr play button ee click korle first theke play hoi. ami emon chai na. ami chai jekhan theke play hoise sekhan thekei abr play hok. and sathe ekta extra button dite paro je seitai click korle first theke abr play hobe
