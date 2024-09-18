@@ -12,9 +12,11 @@ import { GiNewspaper } from "react-icons/gi";
 import { FaPenFancy } from "react-icons/fa";
 import './InnerDrawer.css';
 import { useNavigate } from "react-router-dom"
+import { useBlogContext } from '../../context/ContextContainer';
 
 const InnerDrawer = () => {
-    const navigate = useNavigate()
+    const {api,setToken, token} = useBlogContext()
+        const navigate = useNavigate()
     const categoryList = [
         {
             name: "Bangladesh"
@@ -44,11 +46,31 @@ const InnerDrawer = () => {
             name: "Medical News"
         },
     ]
+
+    const logout = async () => {
+
+        try {
+            const response = await api.get("/api/logout")
+            // console.log(response.data)
+            if (response.data.success) {
+                console.log(response.data?.message)
+                setToken(false)
+            } else {
+                setToken(true)
+            }
+
+        } catch (error) {
+            console.log(error.message, "getToken Error")
+        }
+
+    }
+
+
     return (
         <div className="inner-drawer-container">
             {/* First section for account */}
-            <div className="account-section">
-                <Button variant="outlined" className="account-button"
+           {token ? <div className="account-section">
+               <Button variant="outlined" className="account-button"
                 onClick={()=> navigate("/newPost")}>
                     Create Post
                 </Button>
@@ -56,6 +78,16 @@ const InnerDrawer = () => {
                     My Account
                 </Button>
             </div>
+            :  <div className="account-section">
+            <Button variant="outlined" className="account-button"
+             onClick={()=> navigate("/login")}>
+                 Login
+             </Button>
+             <Button  onClick={()=> navigate("/register")} variant="outlined" className="account-button">
+                 Register
+             </Button>
+         </div>
+            }
             <Divider />
 
             {/* Second section for categories with scrolling */}
@@ -80,11 +112,15 @@ const InnerDrawer = () => {
             <Divider />
 
             {/* Third section for logout */}
-            <div className="logout-section">
-                <Button variant="contained" color="error" className="logout-button">
+           {token && <div className="logout-section">
+                <Button 
+                variant="contained" 
+                color="error" 
+                className="logout-button"
+                onClick={logout}>
                     Log Out
                 </Button>
-            </div>
+            </div>}
         </div>
     );
 };
