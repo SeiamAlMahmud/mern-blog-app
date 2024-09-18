@@ -9,6 +9,7 @@
     max-height: 300px;
   }
   
+
   .logout-section {
     padding: 16px;
     text-align: center;
@@ -68,3 +69,14 @@
     width: 100%; /* Full width button for logout */
   }
   
+
+  .navbar_i{
+    padding: 10px;
+    font-size: 25px;
+    display: none;
+  }
+  @media (max-width: 1175px) {
+    .navbar_i{
+      display: block;
+    }
+}

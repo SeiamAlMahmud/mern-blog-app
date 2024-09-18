@@ -22,12 +22,34 @@ const InnerDrawer = () => {
         {
             name: "Politics"
         },
+        {
+            name: "International"
+        },
+        {
+            name: "sports"
+        },
+        {
+            name: "Entertainment"
+        },
+        {
+            name: "Health"
+        },
+        {
+            name: "Religion"
+        },
+        {
+            name: "Health Tips"
+        },
+        {
+            name: "Medical News"
+        },
     ]
     return (
         <div className="inner-drawer-container">
             {/* First section for account */}
             <div className="account-section">
-                <Button variant="outlined" className="account-button">
+                <Button variant="outlined" className="account-button"
+                onClick={()=> navigate("/newPost")}>
                     Create Post
                 </Button>
                 <Button variant="outlined" className="account-button">
@@ -40,7 +62,7 @@ const InnerDrawer = () => {
             <div className="category-section">
                 <List>
                     {categoryList.map((text, index) => (
-                        <ListItem key={text} disablePadding onClick={()=> navigate(`/category/${text?.name}`)}>
+                        <ListItem key={index} disablePadding onClick={()=> navigate(`/category/${text?.name}`)}>
                             <ListItemButton>
                                 <ListItemIcon>
                                     {index % 2 === 0 ?

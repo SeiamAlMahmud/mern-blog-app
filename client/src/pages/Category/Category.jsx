@@ -3,6 +3,10 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useBlogContext } from '../../context/ContextContainer';
 import Loader from '../../foundation/Loader/Loader';
 import HomePagePost from '../../components/HomePagePost/HomePagePost';
+import "./Category.css"
+
+
+
 
 const Category = () => {
   const { cateName } = useParams();
@@ -21,22 +25,24 @@ const Category = () => {
   const getCategoryPosts = async (page) => {
     setLoading(true);
     try {
-      // Fetch posts from API for the category and page number
-      const response = await api.get(`/api/category/${cateName}?page=${page}`);
-      console.log(response.data);
+      const timestamp = new Date().getTime(); // Cache busting by adding a unique timestamp
+      const response = await api.get(`/api/category/${cateName}?page=${page}&_=${timestamp}`);
 
-      // Only update posts if there is data; otherwise, keep the previous posts
       if (response.data.posts && response.data.posts.length > 0) {
-        setPosts((prevPosts) => [...prevPosts, ...response.data.posts]);  // Append new posts to the existing ones
+        setPosts(response.data?.posts);
+      } else {
+
+        setPosts([]);
       }
 
-      setTotalPages(response.data.totalPages);  // Update total pages regardless of posts
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching category posts:', error);
     } finally {
       setLoading(false);
     }
   };
+
 
   // Function to handle pagination (next page)
   const handleNextPage = () => {
@@ -54,44 +60,50 @@ const Category = () => {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        posts.map((post) => {
-          return <HomePagePost post={post} key={post._id} />;
-        })
-      )}
+    {posts.length == 0 && !loading ? <div className='not_found_data'>
+      <h1>404</h1>
+      <p> We have not news for this category</p>
+    </div> : (<div>
 
-      {/* Pagination Controls */}
-      <div className="pagination-controls">
-        <button
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-          style={{
-            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',
-            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-            color: currentPage === 1 ? '#666' : '#fff',
-          }}
-        >
-          Previous
-        </button>
+        {loading ? (
+          <Loader />
+        ) : (
+          posts.map((post) => {
+            return <HomePagePost post={post} key={post._id} />;
+          })
+        )}
 
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
+        {/* Pagination Controls */}
+        <div className="pagination-controls">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            style={{
+              backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              color: currentPage === 1 ? '#666' : '#fff',
+            }}
+          >
+            Previous
+          </button>
 
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          style={{
-            backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',
-            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-            color: currentPage === totalPages ? '#666' : '#fff',
-          }}
-        >
-          Next
-        </button>
-      </div>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            style={{
+              backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+              color: currentPage === totalPages ? '#666' : '#fff',
+            }}
+          >
+            Next
+          </button>
+        </div>
+      </div>)}
     </>
   );
 };

@@ -140,7 +140,7 @@ const BlogView = () => {
           {
             fourPosts.map(item => {
               return (
-                <div className='four_post_container' onClick={() => navigate(`/post/${item._id}`)}>
+                <div key={item?._id} className='four_post_container' onClick={() => navigate(`/post/${item._id}`)}>
                   <ActionAreaCard
                     key={item._id}
                     item={item}

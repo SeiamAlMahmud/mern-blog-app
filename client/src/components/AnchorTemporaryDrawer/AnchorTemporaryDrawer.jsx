@@ -12,6 +12,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { GiHamburgerMenu } from "react-icons/gi";
 import InnerDrawer from './InnerDrawer';
+import "./InnerDrawer.css"
 
 
 
@@ -69,13 +70,15 @@ export default function AnchorTemporaryDrawer() {
   return (
       <div>
         <React.Fragment >
-          <i onClick={toggleDrawer(anchor, true)}><GiHamburgerMenu /></i>
+          <i 
+           className='navbar_i'
+           onClick={toggleDrawer(anchor, true)}><GiHamburgerMenu /></i>
           <Drawer
             anchor={anchor}
             open={state[anchor]}
             onClose={toggleDrawer(anchor, false)}
           >
-            {/* {list(anchor)} */}
+            
             <InnerDrawer />
           </Drawer>
         </React.Fragment>

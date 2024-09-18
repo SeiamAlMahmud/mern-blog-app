@@ -283,8 +283,8 @@ const getCategoryPosts = async (req, res) => {
   
       // Find posts where category matches (case-insensitive) and select only title, username, createdAt, and summary
       const posts = await Post.find({
-        category: { $regex: category, $options: 'i' },
-        category: { $exists: true, $ne: null }
+        category: { $regex: category, $options: 'i' }
+        // category: { $exists: true, $ne: null }
       })
         .select('title username createdAt summary image')  // Only return specific fields
         .skip((pageNum - 1) * limitNum)              // Skip posts for previous pages
@@ -318,7 +318,7 @@ const getCategoryPosts = async (req, res) => {
   };
 
 
-  
+
 
 export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
