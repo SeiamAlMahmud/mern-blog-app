@@ -16,6 +16,7 @@ import Parrent from '../test/Parrent.jsx';
 import CreateNewPost from './pages/CreateNewPost/CreateNewPost.jsx';
 import BlogView from './pages/BlogView/BlogView.jsx';
 import Category from './pages/Category/Category.jsx';
+import PrivateRoute from './PrivateRoute/PrivateRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/newPost",
-        element: <CreateNewPost />
+        element: (<PrivateRoute>
+          <CreateNewPost />
+        </PrivateRoute>)
       },
       {
         path: "/register",
