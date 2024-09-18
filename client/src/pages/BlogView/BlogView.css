@@ -165,6 +165,7 @@
 .play-speech-button {
     margin-top: 1rem;
     padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
     font-size: 1rem;
     cursor: pointer;
     border: none;

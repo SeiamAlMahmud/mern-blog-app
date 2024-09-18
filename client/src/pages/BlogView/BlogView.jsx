@@ -183,3 +183,7 @@ const BlogView = () => {
 };
 
 export default BlogView;
+
+
+
+//    ekhane 2 ta jinis imrpvement kora lagbe. 1. page er pathname change hole play button automatically stop hoye jabe.  and jokon doro onakkhon play holo, ami pause korlam. abr play button ee click korle first theke play hoi. ami emon chai na. ami chai jekhan theke play hoise sekhan thekei abr play hok. and sathe ekta extra button dite paro je seitai click korle first theke abr play hobe
