@@ -3,6 +3,7 @@ import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourW
 import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
+import { infinityPost } from "../Controller/PostController.js";
 const router = express.Router()
 
 
@@ -45,5 +46,6 @@ router.get('/getAllPosts',getAllPosts)
 router.get('/post/:id',getSinglePost);
 router.get('/randomPost',getRandomFourWithin);
 router.get('/category/:category', getCategoryPosts)
+router.get("/infinityPost", infinityPost)
 
 export default router

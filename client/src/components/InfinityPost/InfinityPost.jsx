@@ -1,22 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBlogContext } from '../../context/ContextContainer';
-import "./BlogView.css";
+import "../../pages/BlogView/BlogView.css";
 import Loader from '../../foundation/Loader/Loader';
 import moment from "moment";
 import { IoLink } from "react-icons/io5";
 import { GoZoomIn, GoZoomOut } from "react-icons/go";
 import toast from "react-hot-toast";
 import ActionAreaCard from '../../components/ActionAreaCard/ActionAreaCard';
-import InfinityPost from '../../components/InfinityPost/InfinityPost';
 
-const BlogView = () => {
+const InfinityPost = ({post}) => {
   const { api, website, token } = useBlogContext();
   const { id } = useParams();
-  const [post, setPost] = useState({});
+//   const [post, setPost] = useState({});
   const [fourPosts, setFourPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [owner, setOwner] = useState(false);
+//   const [owner, setOwner] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speechInstance, setSpeechInstance] = useState(null);
@@ -30,103 +29,65 @@ const BlogView = () => {
   const [skip, setSkip] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-console.log(data)
+// console.log(data)
   const dataContainerRef = useRef(null);
 
   // fetch data for infinity 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await api.get(`/api/infinityPost?page=${page}&skip=${skip}`)
-      if (response.data?.success) {
-        console.log(response.data)
+//   const fetchData = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await api.get(`/api/infinityPost?page=${page}&skip=${skip}`)
+//       if (response.data?.success) {
+//         console.log(response.data)
 
-        if (response.data?.infinityPost === 0) {
-          setHasMore(response.data?.hasMore);
-        } else {
-          // setData(response.data?.infinityPost) 
-          setData((prevData) => [...prevData, ...response.data?.infinityPost])
-          setHasMore(response.data?.hasMore);
-          setPage((prevPage) => prevPage + 1);
-          setSkip((prevPage) => prevPage + 2);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+//         if (response.data?.infinityPost === 0) {
+//           setHasMore(response.data?.hasMore);
+//         } else {
+//           // setData(response.data?.infinityPost) 
+//           setData((prevData) => [...prevData, ...response.data?.infinityPost])
+//           setHasMore(response.data?.hasMore);
+//           setPage((prevPage) => prevPage + 1);
+//           setSkip((prevPage) => prevPage + 2);
+//         }
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }
 
   // obserse the div 
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
+//   useEffect(() => {
+//     if (isLoading || !hasMore) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          fetchData(); // নির্দিষ্ট div এর নিচে এলে ডাটা লোড হবে
-        }
-      },
-      {
-        root: null, // পুরো পেজ
-        rootMargin: "0px", // ডিভের কাছে এলে ট্রিগার হবে
-        threshold: 0.5, // 50% দেখা গেলে ডাটা লোড হবে
-      }
+//     const observer = new IntersectionObserver(
+//       (entries) => {
+//         if (entries[0].isIntersecting && !isLoading) {
+//           fetchData(); // নির্দিষ্ট div এর নিচে এলে ডাটা লোড হবে
+//         }
+//       },
+//       {
+//         root: null, // পুরো পেজ
+//         rootMargin: "0px", // ডিভের কাছে এলে ট্রিগার হবে
+//         threshold: 0.5, // 50% দেখা গেলে ডাটা লোড হবে
+//       }
 
-    );
+//     );
 
-    if (dataContainerRef.current) {
-      observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা হচ্ছে
-    }
+//     if (dataContainerRef.current) {
+//       observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা হচ্ছে
+//     }
 
-    return () => {
-      if (dataContainerRef.current) {
-        observer.unobserve(dataContainerRef.current); // component unmount হলে observer বন্ধ
-      }
-    };
+//     return () => {
+//       if (dataContainerRef.current) {
+//         observer.unobserve(dataContainerRef.current); // component unmount হলে observer বন্ধ
+//       }
+//     };
 
-  }, [isLoading, hasMore])
+//   }, [isLoading, hasMore])
 
 
-
-  // Fetch post data
-  const getData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(`/api/post/${id}`);
-      if (response.data?.success) {
-        setPost(response.data?.post);
-        setOwner(response.data?.owner)
-        console.log(response.data)
-      }
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch four related posts
-  const getFourPost = async () => {
-    try {
-      const response = await api.get("/api/randomPost");
-      if (response.data?.success) {
-        setFourPosts(response.data?.posts);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  // Execute parallel operations
-  const pararellOperation = async () => {
-    await Promise.all([getData(), getFourPost()]);
-  };
-
-  useEffect(() => {
-    pararellOperation();
-  }, [id]);
 
   // Initialize SpeechSynthesis and handle page changes
   useEffect(() => {
@@ -225,9 +186,9 @@ console.log(data)
               <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
             </div>
           </div>
-          {owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
+          {/* {owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
             <button style={{ backgroundColor: "teal", border: "none", padding: "10px 22px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
-          </div>}
+          </div>} */}
           <div className='blogviewTitle'>
             <h1>{post?.title}</h1>
             <h3>{post?.summary}</h3>
@@ -281,15 +242,8 @@ console.log(data)
           ))}
         </div>
       </div>}
-     { data.length !== 0 && data.map((item)=> {
-      return (
-
-        <InfinityPost post={item} key={item._id} />
-      )
-     })
-     }
     </>
   );
 };
 
-export default BlogView;
+export default InfinityPost;
