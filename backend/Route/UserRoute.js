@@ -1,9 +1,11 @@
 import express from "express"
 import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, loginController, logout, registerController } from "../Controller/UserController.js"
+
 import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
-import { infinityPost } from "../Controller/PostController.js";
+
+import { editExistingPost, infinityPost } from "../Controller/PostController.js";
 const router = express.Router()
 
 
@@ -47,5 +49,6 @@ router.get('/post/:id',getSinglePost);
 router.get('/randomPost',getRandomFourWithin);
 router.get('/category/:category', getCategoryPosts)
 router.post("/infinityPost", infinityPost)
+router.put('/updatepost/:id',authMiddleware, upload.single('image'),editExistingPost)
 
 export default router

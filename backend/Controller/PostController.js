@@ -47,5 +47,36 @@ const infinityPost = async (req, res) => {
     }
 };
 
+const editExistingPost = async (req, res) => {
+    const { id } = req.params;
+    const { title, summary, content, keywords, category, readingTime, imageTitle } = req.body;
+    try {
+        const post = await Post.findById(id);
+        if (!post) {
+          return res.status(404).json({ success: false, message: 'Post not found' });
+        }
+          // Update post fields
+    post.title = title;
+    post.summary = summary;
+    post.content = content;
+    post.keywords = JSON.parse(keywords);  // Parse JSON string
+    post.category = category;
+    post.readingTime = readingTime;
+    post.imageTitle = imageTitle;
 
-export { infinityPost }
+     // Handle image upload
+     if (req.file) {
+        const imagePath = `/uploads/${req.file.filename}`;
+        post.image = imagePath;  // Save the new image path
+      }
+      await post.save();
+      res.json({ success: true, message: 'Post updated successfully'});
+  
+    } catch (error) {
+        console.error('Error updating post:', error);
+        res.status(500).json({ success: false, message: 'Internal server error', error });
+    }
+}
+
+
+export { infinityPost, editExistingPost }

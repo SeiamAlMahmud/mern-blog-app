@@ -3,68 +3,82 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import dlImg from "../../assets/upload_area.png";
 import QuillResizeImage from 'quill-resize-image';
-import "../CreateNewPost/CreateNewPost.css";
 import { useBlogContext } from '../../context/ContextContainer';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
+import Loader from '../../foundation/Loader/Loader';
 
-// Register the image resize module with Quill
 Quill.register("modules/resize", QuillResizeImage);
 
 const EditBlog = () => {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null); // Local uploaded image file
+  const [imageUrl, setImageUrl] = useState(""); // Fetched image URL from the server
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [category, setCategory] = useState("");
-  const [readingTime, setReadingTime] = useState("1"); 
-  const [imageTitle, setImageTitle] = useState(""); 
+  const [readingTime, setReadingTime] = useState("1");
+  const [imageTitle, setImageTitle] = useState("");
   const reactQuillRef = useRef(null);
   const { api, token } = useBlogContext();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const { id } = useParams();
+  const [loading, setLoading] = useState(false)
 
+  const CategoryList = [
+    { name: "Bangladesh" },
+    { name: "Politics" },
+    { name: "International" },
+    { name: "Sports" },
+    { name: "Entertainment" },
+    { name: "Health" },
+    { name: "Religion" },
+    { name: "Health Tips" },
+    { name: "Medical News" },
+  ];
 
-  useEffect(()=> {
-        if (!token) {
-             navigate("/login", {state:{from: location.pathname}})
-        } 
-        fetchPost()
-   },[id, token, api, navigate, location.pathname])
+  useEffect(() => {
+    // if (!token) {
+    //   navigate("/login", { state: { from: location.pathname } });
+    // }
+    fetchPost();
+  }, [id, token, api, navigate, location.pathname]);
 
-   const fetchPost = async ()=> {
-
+  const fetchPost = async () => {
+    setLoading(true)
     try {
-        
-        const response = await api.get(`/api/post/${id}`)
-        if (response.data?.success) {
-          const { title, summary, content, keywords, category, readingTime, imageTitle,image } = response.data.post;
-          console.log(response.data.post)
-          setTitle(title);
-          setSummary(summary);
-          setContent(content);
-          setKeywords(keywords || []);
-          setCategory(category);
-          setReadingTime(readingTime || "1");
-          setImageTitle(imageTitle);
-          setImage(null); // Optionally set the image if the API provides a URL
-        }else{
-          console.log("Failed to load post details.")
-        }
-
+      const response = await api.get(`/api/post/${id}`);
+      if (response.data?.success) {
+        const { title, summary, content, keywords, category, readingTime, imageTitle, image } = response.data.post;
+        setTitle(title);
+        setSummary(summary);
+        setContent(content);
+        setKeywords(keywords || []);
+        setCategory(category);
+        setReadingTime(readingTime || "1");
+        setImageTitle(imageTitle);
+        setImageUrl(image);  // Set the image URL fetched from the server
+      } else {
+        console.log("Failed to load post details.");
+      }
     } catch (error) {
-     console.error("Error fetching post:", error);
+      console.error("Error fetching post:", error);
+    }finally{
+      setLoading(false)
     }
-   }
-  // Handle keyword input
+  };
+
   const handleKeywordInput = (e) => {
     const value = e.target.value;
     if (value.includes(',')) {
-      const newKeywords = value.split(',').map((keyword) => keyword.trim()).filter((keyword) => keyword);
+      const newKeywords = value
+        .split(',')
+        .map((keyword) => keyword.trim())
+        .filter((keyword) => keyword);
       setKeywords((prev) => [...prev, ...newKeywords]);
       setInputValue('');
     } else {
@@ -72,12 +86,10 @@ const EditBlog = () => {
     }
   };
 
-  // Remove keyword
   const removeKeyword = (indexToRemove) => {
     setKeywords((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  // Handle Backspace to remove last keyword
   const handleKeyDown = (e) => {
     if (e.key === 'Backspace' && !inputValue && keywords.length) {
       removeKeyword(keywords.length - 1);
@@ -91,56 +103,37 @@ const EditBlog = () => {
     formData.append('title', title);
     formData.append('summary', summary);
     formData.append('content', content);
-    formData.append('keywords', JSON.stringify(keywords)); // Convert array to JSON string
-    formData.append('category', category); // Add category to formData
-    formData.append('readingTime', readingTime); // Add readingTime to formData
-    formData.append('imageTitle', imageTitle); // Add imageTitle to formData
-    if (image) formData.append('image', image);
+    formData.append('keywords', JSON.stringify(keywords));
+    formData.append('category', category);
+    formData.append('readingTime', readingTime);
+    formData.append('imageTitle', imageTitle);
+    
+    if (image) {
+      formData.append('image', image); // Upload a new image if chosen
+    }
 
     try {
-      const response = await api.post('/api/posts', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await api.put(`/api/updatepost/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'}
       });
 
       if (response.data?.success) {
         toast.success(response.data?.message);
         navigate(`/post/${id}`);
+      } else {
+        toast.error('Failed to update the post.');
       }
     } catch (error) {
       console.error('Error saving post:', error);
+      toast.error('Failed to update the post. Please try again.');
     }
   };
-  const CategoryList = [
-    {
-      name: "Bangladesh"
-    },
-    {
-      name: "Politics"
-    },
-    {
-      name: "International"
-    },
-    {
-      name: "sports"
-    },
-    {
-      name: "Entertainment"
-    },
-    {
-      name: "Health"
-    },
-    {
-      name: "Religion"
-    },
-    {
-      name: "Health Tips"
-    },
-    {
-      name: "Medical News"
-    }
-  ]
+
   return (
-    <form onSubmit={handleSubmit}>
+    <>
+   { 
+  loading ? <Loader /> : <form onSubmit={handleSubmit}>
       <div className='create__post'>
         <input
           type="text"
@@ -181,16 +174,11 @@ const EditBlog = () => {
           required
         >
           <option value="" disabled>Select category</option>
-          {
-            CategoryList.map((item,idx)=> {
-              return (
-                <option key={idx} value={item?.name}>{item?.name}</option>
-              )
-            })
-          }
-          <option value="sports">Sports</option>
-          <option value="international">International</option>
-          <option value="health">Health</option>
+          {CategoryList.map((item, idx) => (
+            <option key={idx} value={item.name}>
+              {item.name}
+            </option>
+          ))}
         </select>
 
         {/* Reading Time Input */}
@@ -213,22 +201,19 @@ const EditBlog = () => {
         {/* Image Upload */}
         <div className='new_post_img_upload'>
           <label htmlFor="image">
-            <img src={image ? URL.createObjectURL(image) : dlImg} alt="Upload area" />
+            <img 
+              src={image ? URL.createObjectURL(image) : (imageUrl ? imageUrl : dlImg)} 
+              alt="Upload area" 
+            />
           </label>
           <input
             type="file"
             id='image'
             onChange={(e) => setImage(e.target.files[0])}
             accept="image/*"
-            aria-label="Upload featured image"
-            required
             hidden
           />
-          <p style={{
-            color: "red",
-            margin: "3px",
-            visibility: image ? "hidden" : "visible"
-          }}>
+          <p style={{ color: "red", margin: "3px", visibility: image || imageUrl ? "hidden" : "visible" }}>
             Thumbnail image is required.
           </p>
         </div>
@@ -239,27 +224,12 @@ const EditBlog = () => {
           theme="snow"
           placeholder="Start writing..."
           modules={{
-            toolbar: {
-              container: [
-                [{ header: "1" }, { header: "2" }, { font: [] }],
-                [{ size: [] }],
-                ["bold", "italic", "underline", "strike", "blockquote"],
-                [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-                ["link", "image", "video"],
-                ["code-block"],
-                ["clean"],
-              ],
-            },
-            resize: {
-              locale: {},
-            },
-            clipboard: {
-              matchVisual: false,
-            },
+            toolbar: { /* Toolbar settings */ },
+            resize: { locale: {} },
+            clipboard: { matchVisual: false },
           }}
           formats={[
-            "header", "font", "size", "bold", "italic", "underline", "strike",
-            "blockquote", "list", "bullet", "indent", "link", "image", "video", "code-block",
+            /* Allowed formats */
           ]}
           value={content}
           onChange={setContent}
@@ -268,6 +238,8 @@ const EditBlog = () => {
         <button type="submit" className='form_btn'>Submit</button>
       </div>
     </form>
+}
+    </>
   );
 };
 
