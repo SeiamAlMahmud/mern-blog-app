@@ -81,7 +81,7 @@ const BlogView = () => {
       {
         root: null,
         rootMargin: "0px",
-        threshold: 0.5, // ৫০% দেখা গেলে ডাটা লোড হবে
+        threshold: 1.0, // ৫০% দেখা গেলে ডাটা লোড হবে
       }
     );
 
@@ -227,82 +227,86 @@ const BlogView = () => {
 
   return (
     <>
-      {loading ? <Loader /> : (
-        <div className='blogView__section'>
-          <div className='blog__general_top'>
-            <p className='general_line'>Full News Time</p>
-            <div className='category_time'>
-              <p className='category' onClick={() => navigate(`/category/${post?.category}`)}>{post?.category}</p>
-              <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
+      <div
+        ref={dataContainerRef}
+      >
+
+        {loading ? <Loader /> : (
+          <div className='blogView__section'>
+            <div className='blog__general_top'>
+              <p className='general_line'>Full News Time</p>
+              <div className='category_time'>
+                <p className='category' onClick={() => navigate(`/category/${post?.category}`)}>{post?.category}</p>
+                <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
+              </div>
+            </div>
+            {owner && token && <div
+              style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
+              <button
+                style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}
+                onClick={() => navigate(`/edit/${post?._id}`)}
+              >Edit</button>
+            </div>}
+            <div className='blogviewTitle'>
+              <h1>{post?.title}</h1>
+              <h3>{post?.summary}</h3>
+            </div>
+            <div className='blogviw_Thumbnail'>
+              <img src={post.image} alt="" />
+              <p className='thumbnail_description'>{post?.imageTitle}</p>
+            </div>
+            <div className='name_duration'>
+              <div className='part_1'>
+                <p>{post?.username}</p>
+                <p>{post?.readingTime} {post?.readingTime === 1 ? "minute" : "minutes"} in Read</p>
+              </div>
+              <div className='part_2'>
+                <i onClick={() => setFontSize(fontSize + 1)} title="Zoom In">
+                  <GoZoomIn />
+                </i>
+                <i onClick={() => setFontSize(fontSize - 1)} title="Zoom Out">
+                  <GoZoomOut />
+                </i>
+                <i onClick={copyToClipboard} title="Copy to clipboard">
+                  <IoLink />
+                </i>
+              </div>
+            </div>
+
+            <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
+              {isPlaying ? 'Stop Speech' : 'Play Speech'}
+            </button>
+
+            <div className='post-content'
+              style={{ fontSize: `${fontSize}px` }}
+              dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
+            </div>
+
+            <div className='keywords__section'>
+              {post?.keywords && post?.keywords.map((item, idx) => (
+                <p key={idx}>{item}</p>
+              ))}
             </div>
           </div>
-          {owner && token && <div
-            style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
-            <button
-              style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}
-              onClick={() => navigate(`/edit/${post?._id}`)}
-            >Edit</button>
-          </div>}
-          <div className='blogviewTitle'>
-            <h1>{post?.title}</h1>
-            <h3>{post?.summary}</h3>
-          </div>
-          <div className='blogviw_Thumbnail'>
-            <img src={post.image} alt="" />
-            <p className='thumbnail_description'>{post?.imageTitle}</p>
-          </div>
-          <div className='name_duration'>
-            <div className='part_1'>
-              <p>{post?.username}</p>
-              <p>{post?.readingTime} {post?.readingTime === 1 ? "minute" : "minutes"} in Read</p>
-            </div>
-            <div className='part_2'>
-              <i onClick={() => setFontSize(fontSize + 1)} title="Zoom In">
-                <GoZoomIn />
-              </i>
-              <i onClick={() => setFontSize(fontSize - 1)} title="Zoom Out">
-                <GoZoomOut />
-              </i>
-              <i onClick={copyToClipboard} title="Copy to clipboard">
-                <IoLink />
-              </i>
-            </div>
-          </div>
+        )}
 
-          <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
-            {isPlaying ? 'Stop Speech' : 'Play Speech'}
-          </button>
-
-          <div className='post-content'
-            ref={dataContainerRef}
-            style={{ fontSize: `${fontSize}px` }}
-            dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
-          </div>
-
-          <div className='keywords__section'>
-            {post?.keywords && post?.keywords.map((item, idx) => (
-              <p key={idx}>{item}</p>
+        {!loading && <div className='four_post_section'>
+          <div className='four_post_container'>
+            {fourPosts.map(item => (
+              <div key={item?._id} className='four_post_container' onClick={() => navigate(`/post/${item._id}`)}>
+                <ActionAreaCard key={item._id} item={item} />
+              </div>
             ))}
           </div>
-        </div>
-      )}
+        </div>}
+        {data.length !== 0 && data.map((item) => {
+          return (
 
-      {!loading && <div className='four_post_section'>
-        <div className='four_post_container'>
-          {fourPosts.map(item => (
-            <div key={item?._id} className='four_post_container' onClick={() => navigate(`/post/${item._id}`)}>
-              <ActionAreaCard key={item._id} item={item} />
-            </div>
-          ))}
-        </div>
-      </div>}
-      {data.length !== 0 && data.map((item) => {
-        return (
-
-          <InfinityPost post={item} key={item._id} />
-        )
-      })
-      }
+            <InfinityPost post={item} key={item._id} />
+          )
+        })
+        }
+      </div>
     </>
   );
 };

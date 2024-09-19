@@ -34,7 +34,7 @@ const InnerDrawer = ({ closeDrawer }) => {
       if (response.data.success) {
         setToken(false);
         closeDrawer();  // Close the drawer after logging out
-        navigate("/login");
+        // navigate("/login");
       } else {
         setToken(true);
       }

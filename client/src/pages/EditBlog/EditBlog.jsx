@@ -107,15 +107,20 @@ const EditBlog = () => {
     formData.append('category', category);
     formData.append('readingTime', readingTime);
     formData.append('imageTitle', imageTitle);
-    
+
+    // Append the image only if a new one is uploaded
     if (image) {
       formData.append('image', image); // Upload a new image if chosen
+    } else {
+      formData.append('existingImageUrl', imageUrl); // Send the existing image URL if no new image is chosen
     }
 
     try {
       const response = await api.put(`/api/updatepost/${id}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'}
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.data?.success) {
@@ -132,8 +137,7 @@ const EditBlog = () => {
 
   return (
     <>
-   { 
-  loading ? <Loader /> : <form onSubmit={handleSubmit}>
+   {loading ? <Loader /> : <form onSubmit={handleSubmit}>
       <div className='create__post'>
         <input
           type="text"
@@ -237,8 +241,7 @@ const EditBlog = () => {
 
         <button type="submit" className='form_btn'>Submit</button>
       </div>
-    </form>
-}
+    </form>}
     </>
   );
 };

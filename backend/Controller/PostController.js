@@ -1,6 +1,13 @@
 import Post from "../Models/PostModel.js";
 import path from "path"
+import fs from "fs"
 import checkOwnership from "../utilities/checkOwnerShip.js";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const infinityPost = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 2;  // প্রতিবার ২টি পোস্ট ফেচ হবে
@@ -47,36 +54,61 @@ const infinityPost = async (req, res) => {
     }
 };
 
+
+
+
+
+
 const editExistingPost = async (req, res) => {
-    const { id } = req.params;
-    const { title, summary, content, keywords, category, readingTime, imageTitle } = req.body;
-    try {
-        const post = await Post.findById(id);
-        if (!post) {
-          return res.status(404).json({ success: false, message: 'Post not found' });
-        }
-          // Update post fields
+  const { id } = req.params;
+  const { title, summary, content, keywords, category, readingTime, imageTitle } = req.body;
+
+  try {
+    // Find the post by ID
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Post not found' });
+    }
+
+    // Update fields
     post.title = title;
     post.summary = summary;
     post.content = content;
-    post.keywords = JSON.parse(keywords);  // Parse JSON string
+    post.keywords = JSON.parse(keywords); // assuming keywords is JSON stringified in frontend
     post.category = category;
     post.readingTime = readingTime;
     post.imageTitle = imageTitle;
 
-     // Handle image upload
-     if (req.file) {
-        const imagePath = `/uploads/${req.file.filename}`;
-        post.image = imagePath;  // Save the new image path
+    // Handle image update
+    if (req.file) { // if a new image is provided
+      const newImagePath = `/uploads/${req.file.filename}`;  // assuming multer saves the file in /uploads
+      const oldImagePath = post.image;
+
+      // Delete old image from filesystem if it exists and is not the default image
+      if (oldImagePath && oldImagePath !== '/uploads/default-image.jpg') {
+        const oldImageFullPath = path.join(__dirname, '..', 'uploads', path.basename(oldImagePath));
+        if (fs.existsSync(oldImageFullPath)) {
+          fs.unlinkSync(oldImageFullPath);
+        }
       }
-      await post.save();
-      res.json({ success: true, message: 'Post updated successfully'});
-  
-    } catch (error) {
-        console.error('Error updating post:', error);
-        res.status(500).json({ success: false, message: 'Internal server error', error });
+
+      // Update post image with new image path
+      post.image = newImagePath;
     }
-}
+
+    // Save updated post
+    await post.save();
+
+    res.json({ success: true, message: 'Post updated successfully', post });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+
+
 
 
 export { infinityPost, editExistingPost }
