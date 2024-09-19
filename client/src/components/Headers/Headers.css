@@ -27,7 +27,7 @@ header {
     padding: 10px;
     border-radius: 20%;
     position: fixed;
-    bottom: -750%;
+    bottom: -650%;
     right: 23px;
     z-index: 1100;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -37,6 +37,11 @@ header {
 @media (max-width:350px) {
     .top-icon {
         display: none;
+    }
+}
+@media (max-width:440px) {
+    .top-icon {
+        bottom: -750%;
     }
 }
 

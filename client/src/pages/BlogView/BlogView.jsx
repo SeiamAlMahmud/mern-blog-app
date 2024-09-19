@@ -35,59 +35,70 @@ console.log(data)
 
   // fetch data for infinity 
   const fetchData = async () => {
-    setIsLoading(true);
+    // যদি ৫টি পোস্ট ইতোমধ্যে লোড করা হয়ে থাকে, তাহলে আর API কল হবে না
+    if (data.length >= 5) {
+      setHasMore(false); // নতুন ডাটা আসা বন্ধ
+      return;
+    }
+  
+    setIsLoading(true); // লোডিং শুরু
     try {
-      const response = await api.post(`/api/infinityPost?skip=${skip}`,{currentPostId: id})
+      const response = await api.post(`/api/infinityPost?skip=${skip}`, { currentPostId: id });
       if (response.data?.success) {
-        console.log(response.data)
-
-        if (response.data?.infinityPost === 0) {
-          setHasMore(response.data?.hasMore);
+        const newPosts = response.data.infinityPost;
+  
+        // যদি নতুন পোস্ট সংখ্যা ৫ বা তার বেশি হয়, নতুন ফেচ বন্ধ করতে হবে
+        const totalPosts = data.length + newPosts.length;
+  
+        if (totalPosts >= 5) {
+          // নতুন ডাটা থেকে শুধুমাত্র প্রয়োজনীয় পোস্টগুলো নেওয়া
+          const remainingPosts = newPosts.slice(0, 5 - data.length);
+          setData((prevData) => [...prevData, ...remainingPosts]);
+          setHasMore(false); // নতুন ডাটা আসা বন্ধ করা
         } else {
-          // setData(response.data?.infinityPost) 
-          setData((prevData) => [...prevData, ...response.data?.infinityPost])
-          setHasMore(response.data?.hasMore);
-          // setPage((prevPage) => prevPage + 1);
-          setSkip((prevSkip) => prevSkip + 2);
+          // ডাটা লোড করে আগের ডাটার সাথে যুক্ত করা
+          setData((prevData) => [...prevData, ...newPosts]);
+          setSkip((prevSkip) => prevSkip + newPosts.length); // পরবর্তী স্কিপ অ্যাড করা
         }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // লোডিং শেষ
     }
-  }
-
-  // obserse the div 
+  };
+  
+  // Intersection Observer Logic
   useEffect(() => {
-    if (isLoading || !hasMore) return;
-
+    if (isLoading || !hasMore) return; // যদি লোডিং চলছে বা hasMore false হয়, ফেচ বন্ধ থাকবে
+  
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          fetchData(); // নির্দিষ্ট div এর নিচে এলে ডাটা লোড হবে
+          fetchData(); // ডিভ intersect হলে ফেচ কল করবে
         }
       },
       {
-        root: null, // পুরো পেজ
-        rootMargin: "0px", // ডিভের কাছে এলে ট্রিগার হবে
-        threshold: 0.5, // 50% দেখা গেলে ডাটা লোড হবে
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.5, // ৫০% দেখা গেলে ডাটা লোড হবে
       }
-
     );
-
+  
     if (dataContainerRef.current) {
-      observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা হচ্ছে
+      observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা
     }
-
+  
     return () => {
       if (dataContainerRef.current) {
-        observer.unobserve(dataContainerRef.current); // component unmount হলে observer বন্ধ
+        observer.unobserve(dataContainerRef.current); // unmount হলে observer বন্ধ
       }
     };
+  }, [isLoading, hasMore, data.length]); // data.length এর ওপর ভিত্তি করে কাজ করবে
+  
+  
 
-  }, [isLoading, hasMore])
-
+  
 
 
   // Fetch post data
