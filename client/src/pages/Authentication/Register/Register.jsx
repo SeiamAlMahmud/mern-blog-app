@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import "../Authentication.css"
 import { useBlogContext } from '../../../context/ContextContainer'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import 'ldrs/pinwheel'
 import toast from 'react-hot-toast'
 import CircularIndeterminate from '../../../foundation/Loader/CircularIndeterminate'
+import { RiLockPasswordFill } from "react-icons/ri";
+import { IoEye } from "react-icons/io5";
+import { IoEyeOffSharp } from "react-icons/io5";
+
 
 const Register = () => {
   const { api, token, setToken,getToken } = useBlogContext()
@@ -14,6 +18,8 @@ const Register = () => {
     password: "",
   })
   const [loading, setLoading] = useState(false)
+  const [togglepas, setTogglePas] = useState(false)
+
  
   const navigate = useNavigate()
 
@@ -70,12 +76,20 @@ const Register = () => {
           value={userData.email}
           onChange={onChangeMethod}
           required />
-        <input type="password"
-          placeholder='password'
-          name='password'
-          value={userData.password}
-          onChange={onChangeMethod}
-          required />
+        <div className='password_toggle'>
+          <i><RiLockPasswordFill /></i>
+          <i onClick={()=> setTogglePas(prev => !prev)}>{togglepas ? <IoEye /> : <IoEyeOffSharp />}</i>
+          <input type={togglepas ? "text" : "password"}
+            placeholder='password'
+            name='password'
+            value={userData.password}
+            onChange={onChangeMethod}
+            required />
+        </div>
+        <div className='have_an_account'>
+          <p>Don't have an account? <Link to={"/login"}>Sign In</Link></p>
+        </div>
+
         <button type='submit'
          disabled={loading}
          style={{ backgroundColor: loading && '#d83a3a', textAlign: "center",  display: "flex", justifyContent: "center", alignItems: "center", padding: "10px" }}

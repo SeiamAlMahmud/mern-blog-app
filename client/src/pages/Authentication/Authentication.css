@@ -9,8 +9,8 @@ form.register {
     align-items: center;
 }
 
-form.login input,
-form.register input {
+.login input,
+.register input {
     border: 0;
     display: block;
     background-color: #eee;
@@ -46,4 +46,29 @@ form.register>h1 {
     margin: 2rem 0;
 }
 
+.password_toggle{
+    position: relative;
+    width: 100%;
+}
+.password_toggle input{
+    padding:7px 27px;
+}
+.password_toggle i:nth-child(2){
+    position: absolute;
+    right: 1px;
+    cursor: pointer;
+    font-size: 21px;
+    top: 10px;
+}
+.password_toggle i:nth-child(1){
+    position: absolute;
+    left: 1px;
+    cursor: pointer;
+    font-size: 21px;
+    top: 10px;
+}
 
+.have_an_account {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
