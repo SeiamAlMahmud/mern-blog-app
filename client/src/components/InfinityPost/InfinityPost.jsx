@@ -24,70 +24,9 @@ const InfinityPost = ({post}) => {
 
   // for infinity news purpose
 
-  const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [skip, setSkip] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+
 // console.log(data)
   const dataContainerRef = useRef(null);
-
-  // fetch data for infinity 
-//   const fetchData = async () => {
-//     setIsLoading(true);
-//     try {
-//       const response = await api.get(`/api/infinityPost?page=${page}&skip=${skip}`)
-//       if (response.data?.success) {
-//         console.log(response.data)
-
-//         if (response.data?.infinityPost === 0) {
-//           setHasMore(response.data?.hasMore);
-//         } else {
-//           // setData(response.data?.infinityPost) 
-//           setData((prevData) => [...prevData, ...response.data?.infinityPost])
-//           setHasMore(response.data?.hasMore);
-//           setPage((prevPage) => prevPage + 1);
-//           setSkip((prevPage) => prevPage + 2);
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }
-
-  // obserse the div 
-//   useEffect(() => {
-//     if (isLoading || !hasMore) return;
-
-//     const observer = new IntersectionObserver(
-//       (entries) => {
-//         if (entries[0].isIntersecting && !isLoading) {
-//           fetchData(); // নির্দিষ্ট div এর নিচে এলে ডাটা লোড হবে
-//         }
-//       },
-//       {
-//         root: null, // পুরো পেজ
-//         rootMargin: "0px", // ডিভের কাছে এলে ট্রিগার হবে
-//         threshold: 0.5, // 50% দেখা গেলে ডাটা লোড হবে
-//       }
-
-//     );
-
-//     if (dataContainerRef.current) {
-//       observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা হচ্ছে
-//     }
-
-//     return () => {
-//       if (dataContainerRef.current) {
-//         observer.unobserve(dataContainerRef.current); // component unmount হলে observer বন্ধ
-//       }
-//     };
-
-//   }, [isLoading, hasMore])
-
-
 
   // Initialize SpeechSynthesis and handle page changes
   useEffect(() => {
@@ -186,9 +125,9 @@ const InfinityPost = ({post}) => {
               <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
             </div>
           </div>
-          {/* {owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
-            <button style={{ backgroundColor: "teal", border: "none", padding: "10px 22px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
-          </div>} */}
+          {post?.owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
+            <button style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
+          </div>} 
           <div className='blogviewTitle'>
             <h1>{post?.title}</h1>
             <h3>{post?.summary}</h3>

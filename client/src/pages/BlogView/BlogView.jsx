@@ -237,7 +237,7 @@ console.log(data)
             </div>
           </div>
           {owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
-            <button style={{ backgroundColor: "teal", border: "none", padding: "10px 22px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
+            <button style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
           </div>}
           <div className='blogviewTitle'>
             <h1>{post?.title}</h1>
