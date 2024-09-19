@@ -37,7 +37,7 @@ console.log(data)
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get(`/api/infinityPost?page=${page}&skip=${skip}`)
+      const response = await api.post(`/api/infinityPost?skip=${skip}`,{currentPostId: id})
       if (response.data?.success) {
         console.log(response.data)
 
@@ -47,8 +47,8 @@ console.log(data)
           // setData(response.data?.infinityPost) 
           setData((prevData) => [...prevData, ...response.data?.infinityPost])
           setHasMore(response.data?.hasMore);
-          setPage((prevPage) => prevPage + 1);
-          setSkip((prevPage) => prevPage + 2);
+          // setPage((prevPage) => prevPage + 1);
+          setSkip((prevSkip) => prevSkip + 2);
         }
       }
     } catch (error) {

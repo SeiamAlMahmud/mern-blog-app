@@ -46,6 +46,6 @@ router.get('/getAllPosts',getAllPosts)
 router.get('/post/:id',getSinglePost);
 router.get('/randomPost',getRandomFourWithin);
 router.get('/category/:category', getCategoryPosts)
-router.get("/infinityPost", infinityPost)
+router.post("/infinityPost", infinityPost)
 
 export default router
