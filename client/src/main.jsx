@@ -17,6 +17,7 @@ import CreateNewPost from './pages/CreateNewPost/CreateNewPost.jsx';
 import BlogView from './pages/BlogView/BlogView.jsx';
 import Category from './pages/Category/Category.jsx';
 import PrivateRoute from './PrivateRoute/PrivateRoute.jsx';
+import EditBlog from './pages/EditBlog/EditBlog.jsx';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,14 @@ const router = createBrowserRouter([
         element: <Category />
       },
       {
+        path: "/edit/:id",
+        element: (
+          <PrivateRoute>
+            <EditBlog />
+          </PrivateRoute>
+        )
+      },
+      {
         path: "/parrent",
         element: <Parrent />
       }
@@ -60,7 +69,7 @@ const router = createBrowserRouter([
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <>
     <ContextContainer>
       <Toaster
         position="top-right"
@@ -68,5 +77,5 @@ createRoot(document.getElementById('root')).render(
       />
       <RouterProvider router={router} />
     </ContextContainer>
-  </StrictMode>,
+  </>,
 )

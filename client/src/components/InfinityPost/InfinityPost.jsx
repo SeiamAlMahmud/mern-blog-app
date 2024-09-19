@@ -9,13 +9,13 @@ import { GoZoomIn, GoZoomOut } from "react-icons/go";
 import toast from "react-hot-toast";
 import ActionAreaCard from '../../components/ActionAreaCard/ActionAreaCard';
 
-const InfinityPost = ({post}) => {
+const InfinityPost = ({ post }) => {
   const { api, website, token } = useBlogContext();
   const { id } = useParams();
-//   const [post, setPost] = useState({});
+  //   const [post, setPost] = useState({});
   const [fourPosts, setFourPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-//   const [owner, setOwner] = useState(false);
+  //   const [owner, setOwner] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speechInstance, setSpeechInstance] = useState(null);
@@ -25,7 +25,7 @@ const InfinityPost = ({post}) => {
   // for infinity news purpose
 
 
-// console.log(data)
+  // console.log(data)
   const dataContainerRef = useRef(null);
 
   // Initialize SpeechSynthesis and handle page changes
@@ -126,8 +126,11 @@ const InfinityPost = ({post}) => {
             </div>
           </div>
           {post?.owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
-            <button style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
-          </div>} 
+            <button
+              style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}
+              onClick={() => navigate(`/edit/${post?._id}`)}
+            >Edit</button>
+          </div>}
           <div className='blogviewTitle'>
             <h1>{post?.title}</h1>
             <h3>{post?.summary}</h3>
@@ -159,7 +162,7 @@ const InfinityPost = ({post}) => {
           </button>
 
           <div className='post-content'
-          ref={dataContainerRef}
+            ref={dataContainerRef}
             style={{ fontSize: `${fontSize}px` }}
             dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
           </div>

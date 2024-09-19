@@ -30,7 +30,7 @@ const BlogView = () => {
   const [skip, setSkip] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-console.log(data)
+  // console.log(data)
   const dataContainerRef = useRef(null);
 
   // fetch data for infinity 
@@ -40,16 +40,16 @@ console.log(data)
       setHasMore(false); // নতুন ডাটা আসা বন্ধ
       return;
     }
-  
+
     setIsLoading(true); // লোডিং শুরু
     try {
       const response = await api.post(`/api/infinityPost?skip=${skip}`, { currentPostId: id });
       if (response.data?.success) {
         const newPosts = response.data.infinityPost;
-  
+
         // যদি নতুন পোস্ট সংখ্যা ৫ বা তার বেশি হয়, নতুন ফেচ বন্ধ করতে হবে
         const totalPosts = data.length + newPosts.length;
-  
+
         if (totalPosts >= 5) {
           // নতুন ডাটা থেকে শুধুমাত্র প্রয়োজনীয় পোস্টগুলো নেওয়া
           const remainingPosts = newPosts.slice(0, 5 - data.length);
@@ -67,11 +67,11 @@ console.log(data)
       setIsLoading(false); // লোডিং শেষ
     }
   };
-  
+
   // Intersection Observer Logic
   useEffect(() => {
     if (isLoading || !hasMore) return; // যদি লোডিং চলছে বা hasMore false হয়, ফেচ বন্ধ থাকবে
-  
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading) {
@@ -84,21 +84,21 @@ console.log(data)
         threshold: 0.5, // ৫০% দেখা গেলে ডাটা লোড হবে
       }
     );
-  
+
     if (dataContainerRef.current) {
       observer.observe(dataContainerRef.current); // `loading-container` div কে observe করা
     }
-  
+
     return () => {
       if (dataContainerRef.current) {
         observer.unobserve(dataContainerRef.current); // unmount হলে observer বন্ধ
       }
     };
   }, [isLoading, hasMore, data.length]); // data.length এর ওপর ভিত্তি করে কাজ করবে
-  
-  
 
-  
+
+
+
 
 
   // Fetch post data
@@ -109,7 +109,7 @@ console.log(data)
       if (response.data?.success) {
         setPost(response.data?.post);
         setOwner(response.data?.owner)
-        console.log(response.data)
+        // console.log(response.data)
       }
     } catch (error) {
       console.log(error.message);
@@ -236,8 +236,12 @@ console.log(data)
               <time>{moment(post?.createdAt).format('MMMM Do YYYY, hh:mm:ss a')}</time>
             </div>
           </div>
-          {owner && token && <div style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
-            <button style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}>Edit</button>
+          {owner && token && <div
+            style={{ margin: "15px", display: "flex", justifyContent: "end" }}>
+            <button
+              style={{ backgroundColor: "teal", border: "none", padding: "5px 18px", color: "#fff", fontSize: "1.3rem", borderRadius: "5px" }}
+              onClick={() => navigate(`/edit/${post?._id}`)}
+            >Edit</button>
           </div>}
           <div className='blogviewTitle'>
             <h1>{post?.title}</h1>
@@ -270,7 +274,7 @@ console.log(data)
           </button>
 
           <div className='post-content'
-          ref={dataContainerRef}
+            ref={dataContainerRef}
             style={{ fontSize: `${fontSize}px` }}
             dangerouslySetInnerHTML={{ __html: post?.content || '' }}>
           </div>
@@ -292,13 +296,13 @@ console.log(data)
           ))}
         </div>
       </div>}
-     { data.length !== 0 && data.map((item)=> {
-      return (
+      {data.length !== 0 && data.map((item) => {
+        return (
 
-        <InfinityPost post={item} key={item._id} />
-      )
-     })
-     }
+          <InfinityPost post={item} key={item._id} />
+        )
+      })
+      }
     </>
   );
 };
