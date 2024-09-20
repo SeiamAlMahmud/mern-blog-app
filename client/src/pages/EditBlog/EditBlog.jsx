@@ -8,6 +8,14 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
 import Loader from '../../foundation/Loader/Loader';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
+
+
+
+
 
 Quill.register("modules/resize", QuillResizeImage);
 
@@ -42,9 +50,9 @@ const EditBlog = () => {
   ];
 
   useEffect(() => {
-    // if (!token) {
-    //   navigate("/login", { state: { from: location.pathname } });
-    // }
+    if (!token) {
+     return  navigate("/login", { state: { from: location.pathname } });
+    }
     fetchPost();
   }, [id, token, api, navigate, location.pathname]);
 
@@ -134,6 +142,24 @@ const EditBlog = () => {
       toast.error('Failed to update the post. Please try again.');
     }
   };
+
+  const hello = ()=> {
+    Swal.fire({
+      title: "Do you want to save the changes?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      denyButtonText: `Don't save`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  }
+
 
   return (
     <>
@@ -238,7 +264,7 @@ const EditBlog = () => {
           value={content}
           onChange={setContent}
         />
-
+  <p onClick={hello}>hello</p>
         <button type="submit" className='form_btn'>Submit</button>
       </div>
     </form>}

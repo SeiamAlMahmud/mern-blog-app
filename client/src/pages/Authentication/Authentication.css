@@ -1,6 +1,6 @@
 form.login,
 form.register {
-    max-width: 400px;
+    max-width: 350px;
     margin: 0 auto;
     height: 72vh;
     display: flex;
