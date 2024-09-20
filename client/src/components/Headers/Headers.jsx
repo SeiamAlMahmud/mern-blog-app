@@ -77,7 +77,7 @@ const Headers = () => {
                 <div className='nav_lnk_container'>
                 {token ? <Link className='link link-sm' to={"/newPost"}>Create new Post</Link> : <Link className='link' to={"/login"}>Login</Link>}
                 {
-                    token && <Link>My Account</Link>
+                    token && <Link to={"/myAccount"}>My Account</Link>
                 }
                 {token ? <p
                     onClick={logout}

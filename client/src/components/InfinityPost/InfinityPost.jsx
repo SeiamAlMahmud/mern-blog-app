@@ -132,7 +132,9 @@ const InfinityPost = ({ post }) => {
             >Edit</button>
           </div>}
           <div className='blogviewTitle'>
-            <h1>{post?.title}</h1>
+            <h1
+            style={{cursor: "pointer"}}
+            onClick={() => navigate(`/post/${post?._id}`)}>{post?.title}</h1>
             <h3>{post?.summary}</h3>
           </div>
           <div className='blogviw_Thumbnail'>

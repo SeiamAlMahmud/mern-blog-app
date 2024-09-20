@@ -9,7 +9,7 @@ import checkOwnerShip from '../utilities/checkOwnerShip.js';
 // 
 const registerController = async (req, res) => {
     const { email, username, password, gender, confirmPassword } = req.body;
-    console.log(email, username, password,confirmPassword, gender);
+    console.log(email, username, password, confirmPassword, gender);
 
     try {
 
@@ -109,6 +109,31 @@ const loginController = async (req, res) => {
     }
 }
 
+const getUser = async (req, res) => {
+    try {
+        const userId = req.userId
+        if (!userId) {
+            return res.status(401).json({ success: false, error: "user Id not found" })
+        }
+        const user = await User.findById(userId)
+            .select("-password -posts")
+        // console.log(user)
+
+        if (!user) {
+            return res.status(401).json({ success: false, error: "user not found" })
+        }
+
+        // update image url
+        const baseUrl = req.protocol + '://' + req.get('host');
+        const updatedImage = user.image && `${baseUrl}/uploads/${path.basename(user.image)}`;
+
+        user.image = updatedImage // Append the full path to the image
+        res.status(200).json({ success: true, user })
+    } catch (error) {
+
+    }
+}
+
 const UserCheck = (req, res) => {
     try {
         // console.log(req.cookies['token'])
@@ -134,6 +159,43 @@ const logout = (req, res) => {
         return
     }
 }
+
+
+const updateNewUserImage = async (req, res) => {
+    try {
+        const userId = req.userId;
+        console.log(userId)
+        const newImage = req.file ? `/uploads/${req.file.filename}` : null;
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            image: newImage
+        }, {
+            new: true
+        })
+        if (!newImage) {
+            return res.status(404).json({ success: false, error: "New didn't image updated." })
+        } else {
+
+                // update image url
+        const baseUrl = req.protocol + '://' + req.get('host');
+        const updatedImage = updatedUser.image && `${baseUrl}/uploads/${path.basename(updatedUser.image)}`;
+
+        updatedUser.image = updatedImage // Append the full path to the image
+
+            return res.status(200).json({ success: true, message: "New image updated.", user: updatedImage })
+        }
+
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error" })
+    }
+}
+
+
+
+
+
+
+
 
 const createNewPost = async (req, res) => {
 
@@ -341,7 +403,7 @@ const getCategoryPosts = async (req, res) => {
 
 
 
-export { registerController, loginController, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
+export { registerController, loginController, getUser, updateNewUserImage, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
 
 
