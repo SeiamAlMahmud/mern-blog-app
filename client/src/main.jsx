@@ -18,6 +18,7 @@ import BlogView from './pages/BlogView/BlogView.jsx';
 import Category from './pages/Category/Category.jsx';
 import PrivateRoute from './PrivateRoute/PrivateRoute.jsx';
 import EditBlog from './pages/EditBlog/EditBlog.jsx';
+import MyAccount from './pages/MyAccount/MyAccount.jsx';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,13 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <EditBlog />
+          </PrivateRoute>
+        )
+      },{
+        path: "/myAccount",
+        element: (
+          <PrivateRoute>
+            <MyAccount />
           </PrivateRoute>
         )
       },

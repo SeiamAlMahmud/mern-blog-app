@@ -157,9 +157,9 @@ const InfinityPost = ({ post }) => {
             </div>
           </div>
 
-          <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
+          {/* <button className='play-speech-button' onClick={isPlaying ? stopSpeech : playSpeech}>
             {isPlaying ? 'Stop Speech' : 'Play Speech'}
-          </button>
+          </button> */}
 
           <div className='post-content'
             ref={dataContainerRef}

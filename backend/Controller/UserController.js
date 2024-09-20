@@ -8,12 +8,13 @@ import checkOwnerShip from '../utilities/checkOwnerShip.js';
 
 // 
 const registerController = async (req, res) => {
-    const { email, username, password } = req.body;
-    console.log(email, username, password);
+    const { email, username, password, gender, confirmPassword } = req.body;
+    console.log(email, username, password,confirmPassword, gender);
 
     try {
+
         // if i get blank fields
-        if (!email || !username || !password) {
+        if (!email || !username || !password || !gender) {
             return res.status(400).json({
                 success: false,
                 error: "email, username, or password missing",
@@ -21,6 +22,13 @@ const registerController = async (req, res) => {
             });
         }
 
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                error: "Password didn't match.",
+                message: "Password didn't match."
+            })
+        }
         // if new user is already exists?
         const existingUser = await User.findOne({
             $or: [{ username }, { email }] // either email or username should be unique
@@ -42,6 +50,7 @@ const registerController = async (req, res) => {
         const newUser = await User.create({
             username,
             email,
+            gender,
             password: hashedPassword
         });
 
@@ -154,8 +163,8 @@ const createNewPost = async (req, res) => {
         const user = await User.findById(userId)
         if (post) {
             user.posts.push(post._id)
-            
-            await Promise.all([post.save(),user.save()])
+
+            await Promise.all([post.save(), user.save()])
 
             res.status(201).json({ success: true, message: "post created successfully.", id: post._id })
         }
@@ -224,11 +233,11 @@ const getSinglePost = async (req, res) => {
         const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
         post.image = updatedImage;
 
-         // Ensure the userId is not null before checking ownership
-         const isOwner = post.userId ? await checkOwnerShip(req, post.userId) : false;
+        // Ensure the userId is not null before checking ownership
+        const isOwner = post.userId ? await checkOwnerShip(req, post.userId) : false;
 
-         res.status(200).json({ success: true, owner: isOwner, post });
-      
+        res.status(200).json({ success: true, owner: isOwner, post });
+
         // res.status(200).json({ success: true, post });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -286,48 +295,48 @@ const getRandomFourWithin = async (req, res) => {
 
 const getCategoryPosts = async (req, res) => {
     try {
-      const { category } = req.params;
-      const { page = 1, limit = 5 } = req.query; // Default to page 1, 5 posts per page
-  
-      // Convert page and limit to integers
-      const pageNum = parseInt(page, 10);
-      const limitNum = parseInt(limit, 10);
-  
-      // Find posts where category matches (case-insensitive) and select only title, username, createdAt, and summary
-      const posts = await Post.find({
-        category: { $regex: category, $options: 'i' }
-        // category: { $exists: true, $ne: null }
-      })
-        .select('title username createdAt summary image')  // Only return specific fields
-        .skip((pageNum - 1) * limitNum)              // Skip posts for previous pages
-        .limit(limitNum);                            // Limit the number of posts returned
-     
-      const totalPosts = await Post.countDocuments({
-        category: { $regex: category, $options: 'i' },
-        category: { $exists: true, $ne: null }
-      });
-  
-      const totalPages = Math.ceil(totalPosts / limitNum); // Calculate total pages
+        const { category } = req.params;
+        const { page = 1, limit = 5 } = req.query; // Default to page 1, 5 posts per page
 
-      const updatedPosts = posts.map((post) => {
-        const baseUrl = req.protocol + '://' + req.get('host');
-        const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
-        return {
-            ...post.toObject(), // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
-            image: updatedImage // Append the full path to the image
-        };
-    });
-      res.status(200).json({
-        success: true,
-        posts:updatedPosts,
-        totalPages,  // Return the total number of pages
-        currentPage: pageNum
-      });
+        // Convert page and limit to integers
+        const pageNum = parseInt(page, 10);
+        const limitNum = parseInt(limit, 10);
+
+        // Find posts where category matches (case-insensitive) and select only title, username, createdAt, and summary
+        const posts = await Post.find({
+            category: { $regex: category, $options: 'i' }
+            // category: { $exists: true, $ne: null }
+        })
+            .select('title username createdAt summary image')  // Only return specific fields
+            .skip((pageNum - 1) * limitNum)              // Skip posts for previous pages
+            .limit(limitNum);                            // Limit the number of posts returned
+
+        const totalPosts = await Post.countDocuments({
+            category: { $regex: category, $options: 'i' },
+            category: { $exists: true, $ne: null }
+        });
+
+        const totalPages = Math.ceil(totalPosts / limitNum); // Calculate total pages
+
+        const updatedPosts = posts.map((post) => {
+            const baseUrl = req.protocol + '://' + req.get('host');
+            const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+            return {
+                ...post.toObject(), // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
+                image: updatedImage // Append the full path to the image
+            };
+        });
+        res.status(200).json({
+            success: true,
+            posts: updatedPosts,
+            totalPages,  // Return the total number of pages
+            currentPage: pageNum
+        });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Server Error' });
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
     }
-  };
+};
 
 
 

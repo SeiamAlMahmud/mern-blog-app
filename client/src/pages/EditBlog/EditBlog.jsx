@@ -9,9 +9,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
 import Loader from '../../foundation/Loader/Loader';
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+// import withReactContent from 'sweetalert2-react-content'
 
-const MySwal = withReactContent(Swal)
+// const MySwal = withReactContent(Swal)
 
 
 
@@ -107,58 +107,58 @@ const EditBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('summary', summary);
-    formData.append('content', content);
-    formData.append('keywords', JSON.stringify(keywords));
-    formData.append('category', category);
-    formData.append('readingTime', readingTime);
-    formData.append('imageTitle', imageTitle);
-
-    // Append the image only if a new one is uploaded
-    if (image) {
-      formData.append('image', image); // Upload a new image if chosen
-    } else {
-      formData.append('existingImageUrl', imageUrl); // Send the existing image URL if no new image is chosen
-    }
-
-    try {
-      const response = await api.put(`/api/updatepost/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      if (response.data?.success) {
-        toast.success(response.data?.message);
-        navigate(`/post/${id}`);
-      } else {
-        toast.error('Failed to update the post.');
-      }
-    } catch (error) {
-      console.error('Error saving post:', error);
-      toast.error('Failed to update the post. Please try again.');
-    }
-  };
-
-  const hello = ()=> {
-    Swal.fire({
+    // Show SweetAlert confirmation first
+    const result = await Swal.fire({
       title: "Do you want to save the changes?",
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: "Save",
-      denyButtonText: `Don't save`
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire("Saved!", "", "success");
-      } else if (result.isDenied) {
-        Swal.fire("Changes are not saved", "", "info");
-      }
+      denyButtonText: `Don't save`,
     });
-  }
+
+    // If the user confirms, proceed with submission
+    if (result.isConfirmed) {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('summary', summary);
+      formData.append('content', content);
+      formData.append('keywords', JSON.stringify(keywords));
+      formData.append('category', category);
+      formData.append('readingTime', readingTime);
+      formData.append('imageTitle', imageTitle);
+
+      // Append the image only if a new one is uploaded
+      if (image) {
+        formData.append('image', image); // Upload a new image if chosen
+      } else {
+        formData.append('existingImageUrl', imageUrl); // Send the existing image URL if no new image is chosen
+      }
+
+      try {
+        const response = await api.put(`/api/updatepost/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data?.success) {
+          Swal.fire("Saved!", "", "success"); // Success notification
+          toast.success(response.data?.message);
+          navigate(`/post/${id}`);
+        } else {
+          toast.error('Failed to update the post.');
+        }
+      } catch (error) {
+        console.error('Error saving post:', error);
+        toast.error('Failed to update the post. Please try again.');
+      }
+    } else if (result.isDenied) {
+      Swal.fire("Changes are not saved", "", "info");
+    }
+  };
+  
+ 
 
 
   return (
@@ -264,7 +264,6 @@ const EditBlog = () => {
           value={content}
           onChange={setContent}
         />
-  <p onClick={hello}>hello</p>
         <button type="submit" className='form_btn'>Submit</button>
       </div>
     </form>}

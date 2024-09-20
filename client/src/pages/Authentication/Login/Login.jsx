@@ -30,7 +30,7 @@ const Login = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/")
+      navigate(from)
       getToken()
     }
   }, [token])
