@@ -130,12 +130,20 @@ const getUser = async (req, res) => {
             return res.status(401).json({ success: false, error: "user not found" })
         }
 
+        const totalPosts = await Post.countDocuments({
+            userId: userId
+        });
+        const totalPublish = await Post.countDocuments({
+            userId: userId,
+            isPublished: true
+        });
+
         // update image url
         const baseUrl = req.protocol + '://' + req.get('host');
         const updatedImage = user.image && `${baseUrl}/uploads/${path.basename(user.image)}`;
 
         user.image = updatedImage // Append the full path to the image
-        res.status(200).json({ success: true, user })
+        res.status(200).json({ success: true, user, totalPosts, totalPublish })
     } catch (error) {
 
     }
@@ -167,14 +175,29 @@ const logout = (req, res) => {
     }
 }
 
+const updateNewName = async (req,res)=> {
 
+    try {
+        const userId = req.userId
+        const name = req.body.name;
+        const updatedUser = await User.findByIdAndUpdate(userId, {name})
+        if(!name){
+            return res.status(404).json({success:false, error: "can't update new data"})
+        }
+        res.status(200).json({success: true, name})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({success:false, error: "server error"})
+
+    }
+}
 
 
 const updateNewUserImage = async (req, res) => {
     try {
         const userId = req.userId;
         console.log(userId);
-        
+
         // Get the new image path (if provided)
         const newImage = req.file ? `/uploads/${req.file.filename}` : null;
 
@@ -185,7 +208,7 @@ const updateNewUserImage = async (req, res) => {
         }
 
         const oldImage = user.image; // Store the old image path
-        
+
         // Update the user's image with the new image
         const updatedUser = await User.findByIdAndUpdate(userId, {
             image: newImage
@@ -431,7 +454,7 @@ const getCategoryPosts = async (req, res) => {
 
 
 
-export { registerController, loginController, getUser, updateNewUserImage, logout, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
+export { registerController, loginController, getUser, updateNewUserImage, logout,updateNewName, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
 
 

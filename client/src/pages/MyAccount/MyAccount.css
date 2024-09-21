@@ -1,0 +1,50 @@
+.my_account_image{
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    margin: 0 auto;
+}
+.my_account_image > label {
+    border-radius: 50%;
+    border: 5px solid #000000e2;
+    box-shadow: 0 0 10px rgb(41, 69, 69);
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
+.my_account_image > label > img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: all 0.3s;
+}
+
+.my_account_image > label > img:hover{
+    transform: scale(1.2) rotate(25deg);
+}
+
+.my_account_information h1{
+    margin-top: 20px;
+}
+.my_account_title_section{
+    margin: 30px 0;
+    border: 0.5px solid #ccc;
+    padding: 15px;
+}
+.my_account_title > .my_account_title_child{
+    font-size: 19px;
+    border-bottom: 0.2px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+.my_account_title > .my_account_title_child:last-child{
+    border: none;
+}
+.my_account_title > .my_account_title_child:hover{
+    background-color: #ddddddce;
+}

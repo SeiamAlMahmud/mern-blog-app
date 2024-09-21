@@ -1,5 +1,5 @@
 import express from "express"
-import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, getUser, loginController, logout, registerController, updateNewUserImage } from "../Controller/UserController.js"
+import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, getUser, loginController, logout, registerController, updateNewName, updateNewUserImage } from "../Controller/UserController.js"
 
 import path from "path"
 import multer from "multer";
@@ -34,6 +34,8 @@ router.post("/register", registerController)
 router.post("/login", loginController)
 router.get("/getUser", authMiddleware,getUser)
 router.post('/uploadUserImage',authMiddleware,upload.single('image'),updateNewUserImage)
+router.put('/updateNewName/',authMiddleware, updateNewName)
+
 
 
 // Handle image uploads
