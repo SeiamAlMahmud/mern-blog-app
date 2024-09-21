@@ -2,9 +2,16 @@ import bcrypt from 'bcrypt';
 import User from '../Models/UserModels.js';
 import generatejwtToken from '../utilities/generateJwtToken.js';
 import Post from '../Models/PostModel.js';
+import fs from "fs"
 import path from "path"
-import { error } from 'console';
+import { fileURLToPath } from 'url';
 import checkOwnerShip from '../utilities/checkOwnerShip.js';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 
 // 
 const registerController = async (req, res) => {
@@ -161,34 +168,55 @@ const logout = (req, res) => {
 }
 
 
+
+
 const updateNewUserImage = async (req, res) => {
     try {
         const userId = req.userId;
-        console.log(userId)
+        console.log(userId);
+        
+        // Get the new image path (if provided)
         const newImage = req.file ? `/uploads/${req.file.filename}` : null;
+
+        // Find the user by ID to retrieve the current image
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, error: "User not found." });
+        }
+
+        const oldImage = user.image; // Store the old image path
+        
+        // Update the user's image with the new image
         const updatedUser = await User.findByIdAndUpdate(userId, {
             image: newImage
         }, {
             new: true
-        })
+        });
+
         if (!newImage) {
-            return res.status(404).json({ success: false, error: "New didn't image updated." })
+            return res.status(404).json({ success: false, error: "No new image uploaded." });
         } else {
+            // Update image URL
+            const baseUrl = req.protocol + '://' + req.get('host');
+            const updatedImage = updatedUser.image && `${baseUrl}/uploads/${path.basename(updatedUser.image)}`;
 
-                // update image url
-        const baseUrl = req.protocol + '://' + req.get('host');
-        const updatedImage = updatedUser.image && `${baseUrl}/uploads/${path.basename(updatedUser.image)}`;
+            updatedUser.image = updatedImage; // Append the full path to the image
 
-        updatedUser.image = updatedImage // Append the full path to the image
+            // Asynchronously delete the old image from the server if it exists
+            if (oldImage) {
+                const oldImagePath = path.join(__dirname, '..', 'uploads', path.basename(oldImage)); // Adjust based on your uploads folder location
+                fs.promises.unlink(oldImagePath)
+                    .then(() => console.log('Old image deleted successfully.'))
+                    .catch(err => console.error('Error deleting old image:', err));
+            }
 
-            return res.status(200).json({ success: true, message: "New image updated.", user: updatedImage })
+            return res.status(200).json({ success: true, message: "New image updated.", user: updatedImage });
         }
-
-
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Server Error" })
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
-}
+};
 
 
 
