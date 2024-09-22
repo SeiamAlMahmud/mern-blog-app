@@ -106,10 +106,12 @@ const BlogView = () => {
     setLoading(true);
     try {
       const response = await api.get(`/api/post/${id}`);
-      if (response.data?.success) {
+      if (response.data?.success && response.data?.post?.isPublished == true) {
         setPost(response.data?.post);
         setOwner(response.data?.owner)
         // console.log(response.data)
+      }else{
+        navigate("/")
       }
     } catch (error) {
       console.log(error.message);

@@ -302,13 +302,13 @@ const getAllPosts = async (req, res) => {
         const skip = (page - 1) * limit;
 
         // Fetch posts with pagination
-        const posts = await Post.find()
+        const posts = await Post.find({isPublished: true})
             .select("title username summary image createdAt") // Selecting only necessary fields
             .sort({ createdAt: -1 }) // Sort by most recent
             .skip(skip)
             .limit(limit);
 
-        const totalPosts = await Post.countDocuments(); // Get the total count of posts
+        const totalPosts = await Post.countDocuments({isPublished: true}); // Get the total count of posts
         const totalPages = Math.ceil(totalPosts / limit); // Calculate the total number of pages
 
         // Format image URLs
@@ -417,7 +417,8 @@ const getCategoryPosts = async (req, res) => {
 
         // Find posts where category matches (case-insensitive) and select only title, username, createdAt, and summary
         const posts = await Post.find({
-            category: { $regex: category, $options: 'i' }
+            category: { $regex: category, $options: 'i' },
+            isPublished: true
             // category: { $exists: true, $ne: null }
         })
             .select('title username createdAt summary image')  // Only return specific fields

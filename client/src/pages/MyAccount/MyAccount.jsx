@@ -139,6 +139,11 @@ const MyAccount = () => {
                       <p>Username:</p>
                       <p>{user?.username}</p>
                     </div>
+                    {/* Gender */}
+                    <div className='my_account_title_child'>
+                      <p>Gender:</p>
+                      <p style={{ color: "#F4483C" }}>{user?.gender}</p>
+                    </div>
                     {/* Total Post  */}
                     <div className='my_account_title_child'>
                       <p>Total Post:</p>
@@ -153,11 +158,6 @@ const MyAccount = () => {
                     <div className='my_account_title_child'>
                       <p>Unpublish Post:</p>
                       <p>{totalPost - totalPublish}</p>
-                    </div>
-                    {/* Gender */}
-                    <div className='my_account_title_child'>
-                      <p>Gender:</p>
-                      <p style={{ color: "#F4483C" }}>{user?.gender}</p>
                     </div>
                   </div>
                 </div>

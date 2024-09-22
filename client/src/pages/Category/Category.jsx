@@ -62,7 +62,7 @@ const Category = () => {
     <>
     {posts.length == 0 && !loading ? <div className='not_found_data'>
       <h1>404</h1>
-      <p> We have not news for this category</p>
+      <p> We have no news for this category</p>
     </div> : (<div>
 
         {loading ? (

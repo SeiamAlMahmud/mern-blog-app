@@ -29,6 +29,9 @@
 .my_account_information h1{
     margin-top: 20px;
 }
+.my_account_information{
+    margin-top: 2rem;
+}
 .my_account_title_section{
     margin: 30px 0;
     border: 0.5px solid #ccc;
