@@ -31,24 +31,27 @@ const MyAccount = () => {
   }, [token, pathname])
   // console.log(user)
 
-  const handleChange = async (event, postId) => {
+  const handleChange = async (event, postId, deleteStatus) => {
+    
+    if(deleteStatus) return
+
     const newStatus = event.target.checked;
-    const updatedPosts = sixPosts.map(post => 
+    const updatedPosts = sixPosts.map(post =>
       post._id === postId ? { ...post, isPublished: newStatus } : post
     );
     setSixPosts(updatedPosts); // Optimistically update UI
-  
+
     try {
       const now = Date.now();
       const response = await api.post(`/api/updatePublishStatus?now=${now}`, {
-        postId, 
-        isPublished: newStatus 
+        postId,
+        isPublished: newStatus
       });
       console.log(response.data)
       if (!response.data?.success) {
         // If API fails, revert to old state
         setSixPosts(sixPosts);
-      }else{
+      } else {
         setTotalPost(response.data?.totalPosts)
         setTotalPublish(response.data?.totalPublish)
       }
@@ -59,21 +62,21 @@ const MyAccount = () => {
     }
   };
 
-  const deletePost = async (postId)=> {
+  const deletePost = async (postId) => {
     console.log(postId)
     try {
-      const response = await api.post("/api/deletePost", {postId})
+      const response = await api.post("/api/deletePost", { postId })
       console.log(response)
       if (response.data?.success) {
-        const updatedPosts = sixPosts.map(post => 
+        const updatedPosts = sixPosts.map(post =>
           post._id === postId ? { ...post, isDelete: true } : post
         );
         setSixPosts(updatedPosts); // Optimistically update UI
-      console.log(updatedPosts)
+        console.log(updatedPosts)
       }
     } catch (error) {
       console.error("Error delete post", error);
-      
+
     }
   }
 
@@ -168,6 +171,7 @@ const MyAccount = () => {
       console.log(error)
     }
   }
+  const [isBlurred, setIsBlurred] = useState(true)
   return (
     <>
       {loading ? <Loader /> : (
@@ -243,7 +247,7 @@ const MyAccount = () => {
                       <p>Posts</p>
                       <p>Title</p>
                       <p>pulish</p>
-                      <p style={{color: "#e82121", fontSize:"19px"}}><AiTwotoneDelete /></p>
+                      <p style={{ color: "#e82121", fontSize: "19px" }}><AiTwotoneDelete /></p>
                     </div>
                     <br />
                     <hr />
@@ -253,15 +257,22 @@ const MyAccount = () => {
                           <div key={idx}>
 
                             <div className="cart-items-title cart-items-item">
-                              <img src={item?.image} className='cartImage' alt="d" />
-                              <p><Link to={`/post/${item?._id}`}> {item.title}</Link></p>
+                              <img src={item?.image} className='cartImage'
+                                style={{
+                                  filter: item?.isDelete ? 'blur(5px)' : 'none',  // Conditional blur
+                                  transition: 'filter 0.3s ease'             // Smooth transition
+                                }}
+                                alt="d" />
+                              <p>{item?.isDelete ?
+                                <del>{item.title}</del>
+                                : <Link to={`/post/${item?._id}`}> {item?.title}</Link>}</p>
                               <Switch
-                              size='2'
-                                checked={item?.isPublished}
-                                onChange={(event) => handleChange(event, item?._id)}
+                                size='2'
+                                checked={item?.isDelete ? false : item?.isPublished}
+                                onChange={(event) => handleChange(event, item?._id, item?.isDelete)}
                                 inputProps={{ 'aria-label': 'controlled' }}
                               />
-                             <p style={{color: "#e82121", cursor: "pointer"}} onClick={()=> deletePost(item?._id)}><AiTwotoneDelete /></p> 
+                              <p style={{ color: "#e82121", cursor: "pointer" }} onClick={() => deletePost(item?._id)}><AiTwotoneDelete /></p>
                             </div>
                             <hr />
                           </div>

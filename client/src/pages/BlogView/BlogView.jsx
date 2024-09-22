@@ -110,11 +110,14 @@ const BlogView = () => {
         setPost(response.data?.post);
         setOwner(response.data?.owner)
         // console.log(response.data)
-      }else{
-        navigate("/")
+        
       }
     } catch (error) {
       console.log(error.message);
+      if (error) {
+        console.log(error)
+        navigate("/")
+      }
     } finally {
       setLoading(false);
     }
