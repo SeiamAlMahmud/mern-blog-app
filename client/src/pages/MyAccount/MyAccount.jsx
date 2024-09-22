@@ -125,14 +125,14 @@ const MyAccount = () => {
                 <h1>{user?.name || user?.username}</h1>
               </div>
               <div className='my_account_information'>
-                <h1>My Infrmation:</h1>
+                <h3>My Infrmation:</h3>
                 <div className='my_account_title_section'>
 
                   <div className='my_account_title'>
                     {/* Name */}
                     <div className='my_account_title_child'>
                       <p>Name:</p>
-                      <p style={{ cursor: "pointer" }} onClick={updateUserName}>{user?.name ? user?.name : (<p style={{ color: "blue" }}>Set name</p>)}</p>
+                      <p style={{ cursor: "pointer" }} onClick={updateUserName}>{user?.name ? <p style={{ color: "#F4483C" }}>{user?.name}</p> : (<p style={{ color: "blue" }}>Set name</p>)}</p>
                     </div>
                     {/* Username  */}
                     <div className='my_account_title_child'>
@@ -151,13 +151,13 @@ const MyAccount = () => {
                     </div>
                     {/* Unpublish Post  */}
                     <div className='my_account_title_child'>
-                      <p>Total Post:</p>
+                      <p>Unpublish Post:</p>
                       <p>{totalPost - totalPublish}</p>
                     </div>
                     {/* Gender */}
                     <div className='my_account_title_child'>
                       <p>Gender:</p>
-                      <p>{user?.gender}</p>
+                      <p style={{ color: "#F4483C" }}>{user?.gender}</p>
                     </div>
                   </div>
                 </div>
