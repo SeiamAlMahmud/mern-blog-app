@@ -56,3 +56,24 @@ select {
 .form_btn:hover{
     color: black;
 }
+
+.category_pulish{
+  display: flex;
+  width: 100%;
+  gap: 25px;
+}
+.category_pulish > select{
+  width: 25%;
+  min-width: 110px;
+
+}
+.category_pulish > .publish{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+.category_pulish > .publish > select{
+  width: 15%;
+  min-width: 110px;
+}

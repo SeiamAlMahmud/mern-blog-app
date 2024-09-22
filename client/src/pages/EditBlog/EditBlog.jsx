@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import "../CreateNewPost/CreateNewPost.css"
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import dlImg from "../../assets/upload_area.png";
@@ -28,6 +29,7 @@ const EditBlog = () => {
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [category, setCategory] = useState("");
+  const [isPublished, setIsPublished] = useState(true)
   const [readingTime, setReadingTime] = useState("1");
   const [imageTitle, setImageTitle] = useState("");
   const reactQuillRef = useRef(null);
@@ -51,7 +53,7 @@ const EditBlog = () => {
 
   useEffect(() => {
     if (!token) {
-     return  navigate("/login", { state: { from: location.pathname } });
+      return navigate("/login", { state: { from: location.pathname } });
     }
     fetchPost();
   }, [id, token, api, navigate, location.pathname]);
@@ -61,12 +63,13 @@ const EditBlog = () => {
     try {
       const response = await api.get(`/api/post/${id}`);
       if (response.data?.success) {
-        const { title, summary, content, keywords, category, readingTime, imageTitle, image } = response.data.post;
+        const { title, summary, content, keywords, category, readingTime, imageTitle, image,isPublished } = response.data.post;
         setTitle(title);
         setSummary(summary);
         setContent(content);
         setKeywords(keywords || []);
         setCategory(category);
+        setIsPublished(isPublished)
         setReadingTime(readingTime || "1");
         setImageTitle(imageTitle);
         setImageUrl(image);  // Set the image URL fetched from the server
@@ -75,7 +78,7 @@ const EditBlog = () => {
       }
     } catch (error) {
       console.error("Error fetching post:", error);
-    }finally{
+    } finally {
       setLoading(false)
     }
   };
@@ -124,6 +127,7 @@ const EditBlog = () => {
       formData.append('content', content);
       formData.append('keywords', JSON.stringify(keywords));
       formData.append('category', category);
+      formData.append('isPublished', isPublished);
       formData.append('readingTime', readingTime);
       formData.append('imageTitle', imageTitle);
 
@@ -157,116 +161,127 @@ const EditBlog = () => {
       Swal.fire("Changes are not saved", "", "info");
     }
   };
-  
- 
+
+
 
 
   return (
     <>
-   {loading ? <Loader /> : <form onSubmit={handleSubmit}>
-      <div className='create__post'>
-        <input
-          type="text"
-          placeholder='Title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
-          placeholder='Summary.. '
-          required
-        />
-
-        {/* Keywords Input */}
-        <div className="keywords__input__container">
-          {keywords.map((keyword, index) => (
-            <span className="keyword__tag" key={index}>
-              {keyword}
-              <span className="remove__keyword" onClick={() => removeKeyword(index)} style={{ color: "red", marginLeft: "4px" }}><RxCross2 /></span>
-            </span>
-          ))}
+      {loading ? <Loader /> : <form onSubmit={handleSubmit}>
+        <div className='create__post'>
           <input
             type="text"
-            placeholder='Enter keywords and press comma'
-            value={inputValue}
-            onChange={handleKeywordInput}
-            onKeyDown={handleKeyDown}
+            placeholder='Title'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
           />
-        </div>
-
-        {/* Category Dropdown */}
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          <option value="" disabled>Select category</option>
-          {CategoryList.map((item, idx) => (
-            <option key={idx} value={item.name}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-
-        {/* Reading Time Input */}
-        <input
-          type="number"
-          placeholder='Reading Time (in minutes)'
-          value={readingTime}
-          onChange={(e) => setReadingTime(e.target.value)}
-          required
-        />
-
-        {/* Image Title Input */}
-        <input
-          type="text"
-          placeholder='Image Title'
-          value={imageTitle}
-          onChange={(e) => setImageTitle(e.target.value)}
-        />
-
-        {/* Image Upload */}
-        <div className='new_post_img_upload'>
-          <label htmlFor="image">
-            <img 
-              src={image ? URL.createObjectURL(image) : (imageUrl ? imageUrl : dlImg)} 
-              alt="Upload area" 
-            />
-          </label>
           <input
-            type="file"
-            id='image'
-            onChange={(e) => setImage(e.target.files[0])}
-            accept="image/*"
-            hidden
+            type="text"
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            placeholder='Summary.. '
+            required
           />
-          <p style={{ color: "red", margin: "3px", visibility: image || imageUrl ? "hidden" : "visible" }}>
-            Thumbnail image is required.
-          </p>
-        </div>
 
-        {/* Content Editor */}
-        <ReactQuill
-          ref={reactQuillRef}
-          theme="snow"
-          placeholder="Start writing..."
-          modules={{
-            toolbar: { /* Toolbar settings */ },
-            resize: { locale: {} },
-            clipboard: { matchVisual: false },
-          }}
-          formats={[
-            /* Allowed formats */
-          ]}
-          value={content}
-          onChange={setContent}
-        />
-        <button type="submit" className='form_btn'>Submit</button>
-      </div>
-    </form>}
+          {/* Keywords Input */}
+          <div className="keywords__input__container">
+            {keywords.map((keyword, index) => (
+              <span className="keyword__tag" key={index}>
+                {keyword}
+                <span className="remove__keyword" onClick={() => removeKeyword(index)} style={{ color: "red", marginLeft: "4px" }}><RxCross2 /></span>
+              </span>
+            ))}
+            <input
+              type="text"
+              placeholder='Enter keywords and press comma'
+              value={inputValue}
+              onChange={handleKeywordInput}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+          <div className='category_pulish'>
+            {/* Category Dropdown */}
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            >
+              <option value="" disabled>Select category</option>
+              {CategoryList.map((item, idx) => (
+                <option key={idx} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            <div className="publish">
+              <p> Publish:</p>
+              <select 
+              value={isPublished}
+              onChange={(e)=> setIsPublished(e.target.value)}
+              >
+                <option value="true">Publish</option>
+                <option value="false">Draft</option>
+              </select>
+              </div>
+          </div>
+
+          {/* Reading Time Input */}
+          <input
+            type="number"
+            placeholder='Reading Time (in minutes)'
+            value={readingTime}
+            onChange={(e) => setReadingTime(e.target.value)}
+            required
+          />
+
+          {/* Image Title Input */}
+          <input
+            type="text"
+            placeholder='Image Title'
+            value={imageTitle}
+            onChange={(e) => setImageTitle(e.target.value)}
+          />
+
+          {/* Image Upload */}
+          <div className='new_post_img_upload'>
+            <label htmlFor="image">
+              <img
+                src={image ? URL.createObjectURL(image) : (imageUrl ? imageUrl : dlImg)}
+                alt="Upload area"
+              />
+            </label>
+            <input
+              type="file"
+              id='image'
+              onChange={(e) => setImage(e.target.files[0])}
+              accept="image/*"
+              hidden
+            />
+            <p style={{ color: "red", margin: "3px", visibility: image || imageUrl ? "hidden" : "visible" }}>
+              Thumbnail image is required.
+            </p>
+          </div>
+
+          {/* Content Editor */}
+          <ReactQuill
+            ref={reactQuillRef}
+            theme="snow"
+            placeholder="Start writing..."
+            modules={{
+              toolbar: { /* Toolbar settings */ },
+              resize: { locale: {} },
+              clipboard: { matchVisual: false },
+            }}
+            formats={[
+              /* Allowed formats */
+            ]}
+            value={content}
+            onChange={setContent}
+          />
+          <button type="submit" className='form_btn'>Submit</button>
+        </div>
+      </form>}
     </>
   );
 };
