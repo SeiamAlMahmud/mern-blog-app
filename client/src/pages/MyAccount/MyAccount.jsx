@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useBlogContext } from '../../context/ContextContainer'
 import "./MyAccount.css"
-import { useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import Loader from '../../foundation/Loader/Loader'
 import Swal from 'sweetalert2'
+import Switch from '@mui/material/Switch';
 
 const MyAccount = () => {
 
   const [user, setUser] = useState({})
+  const [sixPosts, setSixPosts] = useState([])
   const [totalPost, setTotalPost] = useState(0)
   const [totalPublish, setTotalPublish] = useState(0)
   const [image, setImage] = useState(null)
@@ -22,8 +24,53 @@ const MyAccount = () => {
       return navigate("/login", { state: { from: pathname } })
     }
     getUser()
+    getUserSixPost()
   }, [token, pathname])
-  console.log(user)
+  // console.log(user)
+
+  const handleChange = async (event, postId) => {
+    const newStatus = event.target.checked;
+    const updatedPosts = sixPosts.map(post => 
+      post._id === postId ? { ...post, isPublished: newStatus } : post
+    );
+    setSixPosts(updatedPosts); // Optimistically update UI
+  
+    try {
+      const now = Date.now();
+      const response = await api.post(`/api/updatePublishStatus?now=${now}`, {
+        postId, 
+        isPublished: newStatus 
+      });
+  
+      if (!response.data?.success) {
+        // If API fails, revert to old state
+        setSixPosts(sixPosts);
+      }
+    } catch (error) {
+      console.error("Error updating publish status", error);
+      // Revert to previous state if error
+      setSixPosts(sixPosts);
+    }
+  };
+
+  const getUserSixPost = async () => {
+    setLoading(true)
+    try {
+      const now = Date.now()
+      const response = await api.get(`/api/getUserSixPost?now=${now}`)
+      if (response.data?.success) {
+        setSixPosts(response.data?.posts)
+
+      }
+    } catch (error) {
+      console.log("Error fetching user:", error)
+    } finally {
+      setLoading(false)
+
+    }
+  }
+
+
   const getUser = async () => {
     setLoading(true)
     try {
@@ -94,7 +141,7 @@ const MyAccount = () => {
         }
       }
     } catch (error) {
-
+      console.log(error)
     }
   }
   return (
@@ -159,6 +206,49 @@ const MyAccount = () => {
                       <p>Unpublish Post:</p>
                       <p>{totalPost - totalPublish}</p>
                     </div>
+                  </div>
+                </div>
+              </div>
+              {/* latest 5 post */}
+
+              <div>
+                <h3>Your Post</h3>
+                <div className='cart'>
+                  <div className="cart-items">
+                    <div className="cart-items-title">
+                      <p>Posts</p>
+                      <p>Title</p>
+                      <p>pulish</p>
+                      <p>edit</p>
+                      <p>X</p>
+                    </div>
+                    <br />
+                    <hr />
+                    {
+                      sixPosts.map((item, idx) => {
+                        return (
+                          <div key={idx}>
+
+                            <div className="cart-items-title cart-items-item">
+                              <img src={item?.image} className='cartImage' alt="d" />
+                              <p><Link to={`/post/${item?._id}`}> {item.title}</Link></p>
+                              <Switch
+                                checked={item?.isPublished}
+                                onChange={(event) => handleChange(event, item?._id)}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                              />
+                              {/* <p> {item?.isPublished}</p> */}
+                              <div className="quantity">
+                                <button className="quantity-btn increment" >+</button>
+                              </div>
+                              <p>l</p>
+                            </div>
+                            <hr />
+                          </div>
+                        )
+
+                      })
+                    }
                   </div>
                 </div>
               </div>

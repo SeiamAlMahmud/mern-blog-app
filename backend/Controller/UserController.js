@@ -175,19 +175,19 @@ const logout = (req, res) => {
     }
 }
 
-const updateNewName = async (req,res)=> {
+const updateNewName = async (req, res) => {
 
     try {
         const userId = req.userId
         const name = req.body.name;
-        const updatedUser = await User.findByIdAndUpdate(userId, {name})
-        if(!name){
-            return res.status(404).json({success:false, error: "can't update new data"})
+        const updatedUser = await User.findByIdAndUpdate(userId, { name })
+        if (!name) {
+            return res.status(404).json({ success: false, error: "can't update new data" })
         }
-        res.status(200).json({success: true, name})
+        res.status(200).json({ success: true, name })
     } catch (error) {
         console.log(error)
-        return res.status(500).json({success:false, error: "server error"})
+        return res.status(500).json({ success: false, error: "server error" })
 
     }
 }
@@ -240,6 +240,35 @@ const updateNewUserImage = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
+const getUsrSixPosts = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const posts = await Post.find({ userId })
+            .select("title image isPublished createdAt")
+            .sort({ createdAt: -1 })
+            .limit(6)
+        if (!posts) {
+            return res.status(404).json({ success: false, })
+        }
+
+                // Format image URLs
+                const updatedPosts = posts.map((post) => {
+                    const baseUrl = req.protocol + '://' + req.get('host');
+                    const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+                    return {
+                        ...post.toObject(), // Convert Mongoose document to a plain JS object
+                        image: updatedImage // Append the full path to the image
+                    };
+                });
+
+        return res.status(200).json({ success: true, posts: updatedPosts })
+
+    } catch (error) {
+        return res.status(500).json({ success: false, error, message: "server error" })
+
+    }
+}
 
 
 
@@ -302,13 +331,13 @@ const getAllPosts = async (req, res) => {
         const skip = (page - 1) * limit;
 
         // Fetch posts with pagination
-        const posts = await Post.find({isPublished: true})
+        const posts = await Post.find({ isPublished: true })
             .select("title username summary image createdAt") // Selecting only necessary fields
             .sort({ createdAt: -1 }) // Sort by most recent
             .skip(skip)
             .limit(limit);
 
-        const totalPosts = await Post.countDocuments({isPublished: true}); // Get the total count of posts
+        const totalPosts = await Post.countDocuments({ isPublished: true }); // Get the total count of posts
         const totalPages = Math.ceil(totalPosts / limit); // Calculate the total number of pages
 
         // Format image URLs
@@ -455,7 +484,7 @@ const getCategoryPosts = async (req, res) => {
 
 
 
-export { registerController, loginController, getUser, updateNewUserImage, logout,updateNewName, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
+export { registerController, loginController, getUser, updateNewUserImage, logout, updateNewName, getUsrSixPosts, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
 
 

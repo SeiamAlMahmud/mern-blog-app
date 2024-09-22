@@ -1,11 +1,11 @@
 import express from "express"
-import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, getUser, loginController, logout, registerController, updateNewName, updateNewUserImage } from "../Controller/UserController.js"
+import { UserCheck, createNewPost, getAllPosts, getCategoryPosts, getRandomFourWithin, getSinglePost, getUser, getUsrSixPosts, loginController, logout, registerController, updateNewName, updateNewUserImage } from "../Controller/UserController.js"
 
 import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
 
-import { editExistingPost, infinityPost } from "../Controller/PostController.js";
+import { editExistingPost, infinityPost, updatePublishStatus } from "../Controller/PostController.js";
 const router = express.Router()
 
 
@@ -33,8 +33,10 @@ router.post("/register", registerController)
 // Handle Login
 router.post("/login", loginController)
 router.get("/getUser", authMiddleware,getUser)
+router.get("/getUserSixPost", authMiddleware,getUsrSixPosts)
 router.post('/uploadUserImage',authMiddleware,upload.single('image'),updateNewUserImage)
 router.put('/updateNewName/',authMiddleware, updateNewName)
+router.post('/updatePublishStatus/',authMiddleware, updatePublishStatus)
 
 
 

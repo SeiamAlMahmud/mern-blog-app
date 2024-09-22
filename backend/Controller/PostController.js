@@ -108,8 +108,25 @@ const editExistingPost = async (req, res) => {
   }
 };
 
+const updatePublishStatus = async (req,res)=> {
+  try {
+  const {postId, isPublished} = req.body;
+    
+  const updateIspublish = await Post.findByIdAndUpdate(postId,{isPublished })
+  if(!updateIspublish){
+    return res.status(404).json({success:false, error: "can't update."})
+  }
+  const currentPost = await Post.findById(postId)
+
+  return res.status(200).json({success:true, updateIspublishPost:currentPost})
+
+  } catch (error) {
+    
+  }
+}
 
 
 
 
-export { infinityPost, editExistingPost }
+
+export { infinityPost, editExistingPost,updatePublishStatus }

@@ -51,3 +51,54 @@
 .my_account_title > .my_account_title_child:hover{
     background-color: #ddddddce;
 }
+
+
+/* for post list  */
+
+.cart-items-title {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 0.3fr 0.3fr 0.2fr ;
+    color: gray;
+    gap: 15px;
+    align-items: center;
+    font-weight: 500;
+    text-align: left;
+    font-size: max(1vw, 18px);
+}
+
+.cart-items-item {
+    margin: 10px;
+    color: #000;
+    font-weight: normal;
+}
+
+.cart-items-item img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+@media (max-width: 800px) {
+    .cart-items-item img {
+        width: 70px;
+        height: 70px;
+    }
+}
+@media (max-width: 600px) {
+    .cart-items-item img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.cart hr {
+    height: 1px;
+    border: none;
+    background-color: #e2e2e2;
+}
+
+.cart-items-item .cross {
+    cursor: pointer;
+    color: red;
+    font-weight: 700;
+}
