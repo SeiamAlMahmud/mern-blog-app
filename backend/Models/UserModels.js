@@ -11,8 +11,9 @@ const userSchema = mongoose.Schema({
   gender: {
     type: String,
     enum: ["Male", "Female"], // Gender can only be "Male" or "Female"
-    // required: true
+    required: true
   },
+  isVerified: { type: Boolean, default: false },
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
