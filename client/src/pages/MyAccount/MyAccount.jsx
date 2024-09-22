@@ -5,6 +5,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import Loader from '../../foundation/Loader/Loader'
 import Swal from 'sweetalert2'
 import Switch from '@mui/material/Switch';
+import { AiTwotoneDelete } from "react-icons/ai";
+
+
 
 const MyAccount = () => {
 
@@ -41,10 +44,13 @@ const MyAccount = () => {
         postId, 
         isPublished: newStatus 
       });
-  
+      console.log(response.data)
       if (!response.data?.success) {
         // If API fails, revert to old state
         setSixPosts(sixPosts);
+      }else{
+        setTotalPost(response.data?.totalPosts)
+        setTotalPublish(response.data?.totalPublish)
       }
     } catch (error) {
       console.error("Error updating publish status", error);
@@ -52,6 +58,24 @@ const MyAccount = () => {
       setSixPosts(sixPosts);
     }
   };
+
+  const deletePost = async (postId)=> {
+    console.log(postId)
+    try {
+      const response = await api.post("/api/deletePost", {postId})
+      console.log(response)
+      if (response.data?.success) {
+        const updatedPosts = sixPosts.map(post => 
+          post._id === postId ? { ...post, isDelete: true } : post
+        );
+        setSixPosts(updatedPosts); // Optimistically update UI
+      console.log(updatedPosts)
+      }
+    } catch (error) {
+      console.error("Error delete post", error);
+      
+    }
+  }
 
   const getUserSixPost = async () => {
     setLoading(true)
@@ -219,8 +243,7 @@ const MyAccount = () => {
                       <p>Posts</p>
                       <p>Title</p>
                       <p>pulish</p>
-                      <p>edit</p>
-                      <p>X</p>
+                      <p style={{color: "#e82121", fontSize:"19px"}}><AiTwotoneDelete /></p>
                     </div>
                     <br />
                     <hr />
@@ -233,15 +256,12 @@ const MyAccount = () => {
                               <img src={item?.image} className='cartImage' alt="d" />
                               <p><Link to={`/post/${item?._id}`}> {item.title}</Link></p>
                               <Switch
+                              size='2'
                                 checked={item?.isPublished}
                                 onChange={(event) => handleChange(event, item?._id)}
                                 inputProps={{ 'aria-label': 'controlled' }}
                               />
-                              {/* <p> {item?.isPublished}</p> */}
-                              <div className="quantity">
-                                <button className="quantity-btn increment" >+</button>
-                              </div>
-                              <p>l</p>
+                             <p style={{color: "#e82121", cursor: "pointer"}} onClick={()=> deletePost(item?._id)}><AiTwotoneDelete /></p> 
                             </div>
                             <hr />
                           </div>

@@ -3,6 +3,7 @@ import path from "path"
 import fs from "fs"
 import checkOwnership from "../utilities/checkOwnerShip.js";
 import { fileURLToPath } from 'url';
+import User from "../Models/UserModels.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -108,25 +109,58 @@ const editExistingPost = async (req, res) => {
   }
 };
 
-const updatePublishStatus = async (req,res)=> {
+const updatePublishStatus = async (req, res) => {
   try {
-  const {postId, isPublished} = req.body;
-    
-  const updateIspublish = await Post.findByIdAndUpdate(postId,{isPublished })
-  if(!updateIspublish){
-    return res.status(404).json({success:false, error: "can't update."})
-  }
-  const currentPost = await Post.findById(postId)
+    const { postId, isPublished } = req.body;
+    const userId = req.userId;
 
-  return res.status(200).json({success:true, updateIspublishPost:currentPost})
+    const updateIspublish = await Post.findByIdAndUpdate(postId, { isPublished })
+    if (!updateIspublish) {
+      return res.status(404).json({ success: false, error: "can't update." })
+    }
+    const totalPosts = await Post.countDocuments({
+      userId: userId
+    });
+    const totalPublish = await Post.countDocuments({
+      userId: userId,
+      isPublished: true
+    });
+
+    return res.status(200).json({ success: true, totalPosts, totalPublish, message: 'successfully updated' })
 
   } catch (error) {
-    
+
+  }
+}
+
+const deletePost = async (req, res) => {
+
+  try {
+    // const userId = req.userId;
+    const { postId } = req.body
+
+    const post = await Post.findById(postId)
+
+    if(!post) {
+      return res.status(404).json({success:false, error: "post not found"})
+    }
+
+    const oldImage = post.image;
+    if (oldImage) {
+      const oldImagePath = path.join(__dirname, '..', 'uploads', path.basename(oldImage)); // Adjust based on your uploads folder location
+    await  fs.promises.unlink(oldImagePath)
+        .then(() => console.log('Old image deleted successfully.'))
+        .catch(err => console.error('Error deleting old image:', err));
+    }
+    const deletePost = await Post.findByIdAndDelete(postId)
+
+    res.status(200).json({ success: true, deletePost })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ success: false, error: "server error", error })
   }
 }
 
 
 
-
-
-export { infinityPost, editExistingPost,updatePublishStatus }
+export { infinityPost, editExistingPost, updatePublishStatus, deletePost }

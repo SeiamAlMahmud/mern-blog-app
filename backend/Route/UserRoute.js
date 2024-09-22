@@ -5,7 +5,7 @@ import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
 
-import { editExistingPost, infinityPost, updatePublishStatus } from "../Controller/PostController.js";
+import { deletePost, editExistingPost, infinityPost, updatePublishStatus } from "../Controller/PostController.js";
 const router = express.Router()
 
 
@@ -37,6 +37,7 @@ router.get("/getUserSixPost", authMiddleware,getUsrSixPosts)
 router.post('/uploadUserImage',authMiddleware,upload.single('image'),updateNewUserImage)
 router.put('/updateNewName/',authMiddleware, updateNewName)
 router.post('/updatePublishStatus/',authMiddleware, updatePublishStatus)
+router.post('/deletePost/',authMiddleware, deletePost)
 
 
 
