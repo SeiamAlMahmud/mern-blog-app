@@ -58,8 +58,6 @@ const infinityPost = async (req, res) => {
 
 
 
-
-
 const editExistingPost = async (req, res) => {
   const { id } = req.params;
   const { title, summary, content, keywords, category, readingTime, imageTitle, isPublished } = req.body;

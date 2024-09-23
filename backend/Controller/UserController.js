@@ -241,13 +241,20 @@ const updateNewUserImage = async (req, res) => {
     }
 };
 
-const getUsrSixPosts = async (req, res) => {
+const getMyAccountPosts = async (req, res) => {
     try {
         const userId = req.userId;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
         const posts = await Post.find({ userId })
             .select("title image isPublished createdAt")
-            .sort({ createdAt: -1 })
-            .limit(6)
+            .skip(skip)
+            .limit(limit);
+
+        const totalPosts = await Post.countDocuments({ userId }); // Get the total count of posts
+        const totalPages = Math.ceil(totalPosts / limit); // Calculate the total number of pages
         if (!posts) {
             return res.status(404).json({ success: false, })
         }
@@ -262,7 +269,11 @@ const getUsrSixPosts = async (req, res) => {
                     };
                 });
 
-        return res.status(200).json({ success: true, posts: updatedPosts })
+        return res.status(200).json({ success: true,
+            currentPage: page,
+            totalPages: totalPages,
+            totalPosts: totalPosts,
+             posts: updatedPosts })
 
     } catch (error) {
         return res.status(500).json({ success: false, error, message: "server error" })
@@ -484,7 +495,7 @@ const getCategoryPosts = async (req, res) => {
 
 
 
-export { registerController, loginController, getUser, updateNewUserImage, logout, updateNewName, getUsrSixPosts, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
+export { registerController, loginController, getUser, updateNewUserImage, logout, updateNewName, getMyAccountPosts, UserCheck, createNewPost, getAllPosts, getSinglePost, getRandomFourWithin, getCategoryPosts };
 
 
 

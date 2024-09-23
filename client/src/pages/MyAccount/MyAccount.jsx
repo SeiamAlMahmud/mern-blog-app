@@ -12,9 +12,12 @@ import { AiTwotoneDelete } from "react-icons/ai";
 const MyAccount = () => {
 
   const [user, setUser] = useState({})
-  const [sixPosts, setSixPosts] = useState([])
+  const [posts, setPosts] = useState([])
   const [totalPost, setTotalPost] = useState(0)
   const [totalPublish, setTotalPublish] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 15; 
   const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
   const { token, api } = useBlogContext()
@@ -22,12 +25,14 @@ const MyAccount = () => {
   const location = useLocation()
   const pathname = location.pathname
 
+  useEffect(()=>{
+    getUsersFifthenPost(currentPage)
+  },[currentPage])
   useEffect(() => {
     if (!token) {
       return navigate("/login", { state: { from: pathname } })
     }
     getUser()
-    getUserSixPost()
   }, [token, pathname])
   // console.log(user)
 
@@ -36,10 +41,10 @@ const MyAccount = () => {
     if(deleteStatus) return
 
     const newStatus = event.target.checked;
-    const updatedPosts = sixPosts.map(post =>
+    const updatedPosts = posts.map(post =>
       post._id === postId ? { ...post, isPublished: newStatus } : post
     );
-    setSixPosts(updatedPosts); // Optimistically update UI
+    setPosts(updatedPosts); // Optimistically update UI
 
     try {
       const now = Date.now();
@@ -50,7 +55,7 @@ const MyAccount = () => {
       console.log(response.data)
       if (!response.data?.success) {
         // If API fails, revert to old state
-        setSixPosts(sixPosts);
+        setPosts(posts);
       } else {
         setTotalPost(response.data?.totalPosts)
         setTotalPublish(response.data?.totalPublish)
@@ -58,7 +63,7 @@ const MyAccount = () => {
     } catch (error) {
       console.error("Error updating publish status", error);
       // Revert to previous state if error
-      setSixPosts(sixPosts);
+      setPosts(posts);
     }
   };
 
@@ -68,10 +73,10 @@ const MyAccount = () => {
       const response = await api.post("/api/deletePost", { postId })
       console.log(response)
       if (response.data?.success) {
-        const updatedPosts = sixPosts.map(post =>
+        const updatedPosts = posts.map(post =>
           post._id === postId ? { ...post, isDelete: true } : post
         );
-        setSixPosts(updatedPosts); // Optimistically update UI
+        setPosts(updatedPosts); // Optimistically update UI
         console.log(updatedPosts)
       }
     } catch (error) {
@@ -80,13 +85,15 @@ const MyAccount = () => {
     }
   }
 
-  const getUserSixPost = async () => {
+  const getUsersFifthenPost = async (page) => {
     setLoading(true)
     try {
       const now = Date.now()
-      const response = await api.get(`/api/getUserSixPost?now=${now}`)
+      const response = await api.get(`/api/getUserMyAccountPost?page=${page}&limit=${limit}&now=${now}`)
       if (response.data?.success) {
-        setSixPosts(response.data?.posts)
+        setPosts(response.data?.posts)
+        setCurrentPage(response.data?.currentPage);
+        setTotalPages(response.data?.totalPages);
 
       }
     } catch (error) {
@@ -171,7 +178,24 @@ const MyAccount = () => {
       console.log(error)
     }
   }
-  const [isBlurred, setIsBlurred] = useState(true)
+
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      // window.scrollTo(0,0)
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      // window.scrollTo(0,0)
+    }
+  };
+
+
+
   return (
     <>
       {loading ? <Loader /> : (
@@ -252,7 +276,7 @@ const MyAccount = () => {
                     <br />
                     <hr />
                     {
-                      sixPosts.map((item, idx) => {
+                      posts.map((item, idx) => {
                         return (
                           <div key={idx}>
 
@@ -283,6 +307,34 @@ const MyAccount = () => {
                   </div>
                 </div>
               </div>
+              {/* Pagination Systems  */} 
+              <div className="pagination-controls">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          style={{
+            backgroundColor: currentPage === 1 ? '#ccc' : '#B60053',  // Grey background if disabled
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',    // Not allowed cursor if disabled
+            color: currentPage === 1 ? '#666' : '#fff',               // Grey text if disabled
+          }}
+        >
+          Previous
+        </button>
+
+        <span>Page {currentPage} of {totalPages}</span>
+
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          style={{
+            backgroundColor: currentPage === totalPages ? '#ccc' : '#B60053',  // Fix here: Check if on last page
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',    // Disable cursor when on last page
+            color: currentPage === totalPages ? '#666' : '#fff',               // Grey text when on last page
+          }}
+        >
+          Next
+        </button>
+      </div>
             </div>
           </main>
         </div>)}

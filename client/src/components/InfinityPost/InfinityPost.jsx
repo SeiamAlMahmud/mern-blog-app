@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useBlogContext } from '../../context/ContextContainer';
 import "../../pages/BlogView/BlogView.css";
 import Loader from '../../foundation/Loader/Loader';
@@ -132,9 +132,10 @@ const InfinityPost = ({ post }) => {
             >Edit</button>
           </div>}
           <div className='blogviewTitle'>
-            <h1
+            {/* <h1
             style={{cursor: "pointer"}}
-            onClick={() => navigate(`/post/${post?._id}`)}>{post?.title}</h1>
+            onClick={() => navigate(`/post/${post?._id}`)}>{post?.title}</h1> */}
+            <Link to={`/post/${post?._id}`}><h1>{post?.title}</h1></Link>
             <h3>{post?.summary}</h3>
           </div>
           <div className='blogviw_Thumbnail'>

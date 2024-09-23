@@ -21,7 +21,8 @@ const HomePagePost = ({post}) => {
                 <img onClick={()=> navigate(`/post/${post._id}`)} src={post.image} alt="" />
             </div>
             <div className="post__text">
-                <h2 onClick={()=> navigate(`/post/${post._id}`)}>{post.title} </h2>
+                <Link to={`/post/${post._id}`}><h2 style={{color: "black"}}>{post.title}</h2></Link>
+                {/* <h2 onClick={()=> navigate(`/post/${post._id}`)}>{post.title} </h2> */}
                 <p className='info'>
                     <Link className="author link">{post.username}</Link>
                     <time>{moment(post.createdAt).format('MM-D-YY, h:mm:ss a')}</time>
