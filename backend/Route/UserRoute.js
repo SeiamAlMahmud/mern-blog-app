@@ -5,7 +5,7 @@ import path from "path"
 import multer from "multer";
 import authMiddleware from "../middleWare/authMiddleware.js";
 
-import { deletePost, editExistingPost, infinityPost, updatePublishStatus } from "../Controller/PostController.js";
+import { Search, deletePost, editExistingPost, infinityPost, updatePublishStatus } from "../Controller/PostController.js";
 const router = express.Router()
 
 
@@ -57,5 +57,6 @@ router.get('/randomPost',getRandomFourWithin);
 router.get('/category/:category', getCategoryPosts)
 router.post("/infinityPost", infinityPost)
 router.put('/updatepost/:id',authMiddleware, upload.single('image'),editExistingPost)
+router.get("/search", Search)
 
 export default router

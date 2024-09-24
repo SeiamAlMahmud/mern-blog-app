@@ -19,6 +19,7 @@ import Category from './pages/Category/Category.jsx';
 import PrivateRoute from './PrivateRoute/PrivateRoute.jsx';
 import EditBlog from './pages/EditBlog/EditBlog.jsx';
 import MyAccount from './pages/MyAccount/MyAccount.jsx';
+import Search from './pages/Search/Search.jsx';
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
             <MyAccount />
           </PrivateRoute>
         )
+      },
+      {
+        path: '/search',
+        element: <Search />
       },
       {
         path: "/parrent",

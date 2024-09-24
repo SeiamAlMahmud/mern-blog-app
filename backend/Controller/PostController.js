@@ -139,14 +139,14 @@ const deletePost = async (req, res) => {
 
     const post = await Post.findById(postId)
 
-    if(!post) {
-      return res.status(404).json({success:false, error: "post not found"})
+    if (!post) {
+      return res.status(404).json({ success: false, error: "post not found" })
     }
 
     const oldImage = post.image;
     if (oldImage) {
       const oldImagePath = path.join(__dirname, '..', 'uploads', path.basename(oldImage)); // Adjust based on your uploads folder location
-    await  fs.promises.unlink(oldImagePath)
+      await fs.promises.unlink(oldImagePath)
         .then(() => console.log('Old image deleted successfully.'))
         .catch(err => console.error('Error deleting old image:', err));
     }
@@ -161,4 +161,46 @@ const deletePost = async (req, res) => {
 
 
 
-export { infinityPost, editExistingPost, updatePublishStatus, deletePost }
+const Search = async (req, res) => {
+  const { keyword, page = 1, limit = 10 } = req.query;
+
+  if (!keyword) {
+    return res.status(400).json({success: false, error: 'Keyword query is required' });
+  }
+
+  try {
+    const regex = new RegExp(keyword, 'i');
+    const skip = (page - 1) * limit;
+
+    const posts = await Post.find({
+      $and: [
+        { $or: [{ title: regex }, { content: regex }] },
+        { isPublished: true }
+      ]
+    })
+      .limit(parseInt(limit))
+      .skip(skip);
+
+    const total = await Post.countDocuments({
+      $and: [
+        { $or: [{ title: regex }, { content: regex }] },
+        { isPublished: true }
+      ]
+    });
+
+    res.status(200).json({
+      success: true,
+      posts,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+      totalPosts: total
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', error });
+  }
+};
+
+
+
+
+export { infinityPost, editExistingPost, updatePublishStatus, deletePost, Search }
