@@ -8,20 +8,22 @@ import { useBlogContext } from '../../context/ContextContainer';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
+import CircularIndeterminate from '../../foundation/Loader/CircularIndeterminate';
 
 // Register the image resize module with Quill
 Quill.register("modules/resize", QuillResizeImage);
 
 const CreateNewPost = () => {
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false)
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [category, setCategory] = useState("");
-  const [readingTime, setReadingTime] = useState("1"); 
-  const [imageTitle, setImageTitle] = useState(""); 
+  const [readingTime, setReadingTime] = useState("1");
+  const [imageTitle, setImageTitle] = useState("");
   const reactQuillRef = useRef(null);
   const { api, token } = useBlogContext();
   const navigate = useNavigate();
@@ -29,11 +31,11 @@ const CreateNewPost = () => {
 
 
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!token) {
-        return navigate("/login", {state:{from: location.pathname}})
+      return navigate("/login", { state: { from: location.pathname } })
     }
-   },[token])
+  }, [token])
 
 
   // Handle keyword input
@@ -68,6 +70,8 @@ const CreateNewPost = () => {
     //   return;
     // }
 
+    setLoading(true)
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('summary', summary);
@@ -89,6 +93,9 @@ const CreateNewPost = () => {
       }
     } catch (error) {
       console.error('Error saving post:', error);
+    }finally{
+    setLoading(false)
+
     }
   };
   const CategoryList = [
@@ -163,7 +170,7 @@ const CreateNewPost = () => {
         >
           <option value="" disabled>Select category</option>
           {
-            CategoryList.map((item,idx)=> {
+            CategoryList.map((item, idx) => {
               return (
                 <option key={idx} value={item?.name}>{item?.name}</option>
               )
@@ -246,7 +253,7 @@ const CreateNewPost = () => {
           onChange={setContent}
         />
 
-        <button type="submit" className='form_btn'>Submit</button>
+        <button type="submit" className='form_btn' disabled={loading}>{loading ? <CircularIndeterminate /> : "Submit"}</button>
       </div>
     </form>
   );

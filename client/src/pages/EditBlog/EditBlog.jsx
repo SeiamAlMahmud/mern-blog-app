@@ -109,7 +109,7 @@ const EditBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Show SweetAlert confirmation first
     const result = await Swal.fire({
       title: "Do you want to save the changes?",
@@ -141,8 +141,7 @@ const EditBlog = () => {
       try {
         const response = await api.put(`/api/updatepost/${id}`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
           },
         });
 
