@@ -172,7 +172,9 @@ const InfinityPost = ({ post }) => {
 
           <div className='keywords__section'>
             {post?.keywords && post?.keywords.map((item, idx) => (
-              <p key={idx}>{item}</p>
+              <p key={idx}><Link
+              style={{color: '#FFF'}}
+              to={`/search?keyword=${item.replace(/\s+/g, '+')}`}>{item}</Link></p>
             ))}
           </div>
         </div>

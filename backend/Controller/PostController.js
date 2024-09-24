@@ -165,7 +165,7 @@ const Search = async (req, res) => {
   const { keyword, page = 1, limit = 10 } = req.query;
 
   if (!keyword) {
-    return res.status(400).json({success: false, error: 'Keyword query is required' });
+    return res.status(400).json({ success: false, error: 'Keyword query is required' });
   }
 
   try {
@@ -174,7 +174,11 @@ const Search = async (req, res) => {
 
     const posts = await Post.find({
       $and: [
-        { $or: [{ title: regex }, { content: regex }] },
+        {
+          $or: [{ title: regex },
+          { content: regex },
+          { keywords: regex }]
+        },
         { isPublished: true }
       ]
     })
@@ -188,9 +192,19 @@ const Search = async (req, res) => {
       ]
     });
 
+
+    const updatedPosts = posts.map((post) => {
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
+      return {
+        ...post.toObject(), // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
+        image: updatedImage // Append the full path to the image
+      };
+    });
+
     res.status(200).json({
       success: true,
-      posts,
+      posts: updatedPosts,
       currentPage: parseInt(page),
       totalPages: Math.ceil(total / limit),
       totalPosts: total

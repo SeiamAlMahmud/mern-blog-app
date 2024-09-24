@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useBlogContext } from '../../context/ContextContainer';
 import "./BlogView.css";
 import Loader from '../../foundation/Loader/Loader';
@@ -289,7 +289,10 @@ const BlogView = () => {
 
             <div className='keywords__section'>
               {post?.keywords && post?.keywords.map((item, idx) => (
-                <p key={idx}>{item}</p>
+                <p 
+                key={idx}><Link
+                style={{color: '#FFF'}}
+                to={`/search?keyword=${item.replace(/\s+/g, '+')}`}>{item}</Link> </p>
               ))}
             </div>
           </div>
