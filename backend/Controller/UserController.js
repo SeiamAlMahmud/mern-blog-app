@@ -459,7 +459,7 @@ const getRandomFourWithin = async (req, res) => {
 const getCategoryPosts = async (req, res) => {
     try {
         const { category } = req.params;
-        const { page = 1, limit = 5 } = req.query; // Default to page 1, 5 posts per page
+        const { page = 1, limit = 10 } = req.query; // Default to page 1, 5 posts per page
 
         // Convert page and limit to integers
         const pageNum = parseInt(page, 10);
@@ -476,9 +476,9 @@ const getCategoryPosts = async (req, res) => {
             .limit(limitNum);                            // Limit the number of posts returned
 
         const totalPosts = await Post.countDocuments({
-            category: { $regex: category, $options: 'i' },
-            category: { $exists: true, $ne: null }
+            category: { $regex: category, $options: 'i' }
         });
+        console.log(totalPosts)
 
         const totalPages = Math.ceil(totalPosts / limitNum); // Calculate total pages
 
