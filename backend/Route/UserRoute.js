@@ -53,7 +53,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
 router.post('/posts',authMiddleware,upload.single('image'),createNewPost)
 router.get('/getAllPosts',getAllPosts)
 router.get('/post/:id',getSinglePost);
-router.get('/randomPost',getRandomFourWithin);
+router.get('/randomPost/:excludePostId?',getRandomFourWithin);
 router.get('/category/:category', getCategoryPosts)
 router.post("/infinityPost", infinityPost)
 router.put('/updatepost/:id',authMiddleware, upload.single('image'),editExistingPost)

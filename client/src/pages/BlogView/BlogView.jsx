@@ -35,9 +35,9 @@ const BlogView = () => {
 
   // fetch data for infinity 
   const fetchData = async () => {
-    // যদি ৫টি পোস্ট ইতোমধ্যে লোড করা হয়ে থাকে, তাহলে আর API কল হবে না
+   
     if (data.length >= 5) {
-      setHasMore(false); // নতুন ডাটা আসা বন্ধ
+      setHasMore(false); 
       return;
     }
 
@@ -126,7 +126,9 @@ const BlogView = () => {
   // Fetch four related posts
   const getFourPost = async () => {
     try {
-      const response = await api.get("/api/randomPost");
+      const excludePostId = post._id || null;
+      const url = excludePostId ? `/api/randomPost/${excludePostId}` : `/api/randomPost`
+      const response = await api.get(url);
       if (response.data?.success) {
         setFourPosts(response.data?.posts);
       }

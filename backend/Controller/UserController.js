@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import User from '../Models/UserModels.js';
 import generatejwtToken from '../utilities/generateJwtToken.js';
@@ -397,18 +398,23 @@ const getSinglePost = async (req, res) => {
     }
 }
 
+
 const getRandomFourWithin = async (req, res) => {
     try {
         // Get the current time and 48 hours back
         const now = new Date();
         const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
 
+        // Get the ID of the post to exclude from the request
+        const excludePostId = req.params.excludePostId;
+
         // Aggregation pipeline
         const randomPosts = await Post.aggregate([
             {
-                // Filter posts created within the last 48 hours
+                // Filter posts created within the last 48 hours and exclude the specific post ID
                 $match: {
-                    createdAt: { $gte: fortyEightHoursAgo }
+                    createdAt: { $gte: fortyEightHoursAgo },
+                    ...(excludePostId && { _id: { $ne: new mongoose.Types.ObjectId(excludePostId) } }) // Use 'new' keyword here
                 }
             },
             {
@@ -429,14 +435,17 @@ const getRandomFourWithin = async (req, res) => {
         if (!randomPosts || randomPosts.length === 0) {
             return res.status(200).json({ success: true, message: 'No posts found in the last 48 hours.', posts: [] });
         }
+
+        // Process posts to append the full image path
         const updatedPosts = randomPosts.map((post) => {
             const baseUrl = req.protocol + '://' + req.get('host');
             const updatedImage = post.image && `${baseUrl}/uploads/${path.basename(post.image)}`;
             return {
-                ...post, // Convert Mongoose document to a plain JS object ( it already a plain object , so need to use .toObject()
+                ...post, // Convert Mongoose document to a plain JS object (no need for .toObject())
                 image: updatedImage // Append the full path to the image
             };
         });
+
         // Return the randomly selected posts with only the requested fields
         return res.status(200).json({ success: true, posts: updatedPosts });
 
