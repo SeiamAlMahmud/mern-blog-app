@@ -308,7 +308,7 @@ const MyAccount = () => {
                 </div>
               </div>
               {/* Pagination Systems  */} 
-              <div className="pagination-controls">
+         {  posts && posts.length > 0 &&  <div className="pagination-controls">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
@@ -334,7 +334,7 @@ const MyAccount = () => {
         >
           Next
         </button>
-      </div>
+      </div>}
             </div>
           </main>
         </div>)}
