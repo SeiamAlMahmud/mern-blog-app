@@ -252,6 +252,7 @@ const getMyAccountPosts = async (req, res) => {
         const posts = await Post.find({ userId })
             .select("title image isPublished createdAt")
             .skip(skip)
+            .sort({createdAt: -1})
             .limit(limit);
 
         const totalPosts = await Post.countDocuments({ userId }); // Get the total count of posts

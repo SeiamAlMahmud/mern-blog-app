@@ -137,14 +137,13 @@ const BlogView = () => {
     }
   };
 
-  // Execute parallel operations
-  const pararellOperation = async () => {
-    await Promise.all([getData(), getFourPost()]);
-  };
 
   useEffect(() => {
-    pararellOperation();
+    getData();
   }, [id]);
+  useEffect(() => {
+    getFourPost();
+  }, [post._id]);
 
   // Initialize SpeechSynthesis and handle page changes
   useEffect(() => {
