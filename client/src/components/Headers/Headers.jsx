@@ -1,9 +1,11 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import "./Headers.css"
 import { useBlogContext } from '../../context/ContextContainer'
 import { FaArrowUp } from 'react-icons/fa'; 
 import AnchorTemporaryDrawer from '../AnchorTemporaryDrawer/AnchorTemporaryDrawer';
+import { IoSearchSharp } from "react-icons/io5";
+
 
 
 
@@ -11,6 +13,8 @@ const Headers = () => {
 
     const { token,api,setToken } = useBlogContext()
     const navigate = useNavigate()
+    const location = useLocation()
+    const pathname = location.pathname
     const logout = async () => {
 
         try {
@@ -74,6 +78,11 @@ const Headers = () => {
         <header>
             <Link className='link logo'>M Blog</Link>
             <nav>
+                  { pathname !== '/search' && <p style={{fontSize: '29px', paddingTop: '12px', cursor: 'pointer'}}>
+                        <i style={{ cursor: 'pointer'}}
+                        onClick={()=> navigate('/search')}
+                        ><IoSearchSharp /></i>
+                    </p>}
                 <div className='nav_lnk_container'>
                 {token ? <Link className='link link-sm' to={"/newPost"}>Create new Post</Link> : <Link className='link' to={"/login"}>Login</Link>}
                 {

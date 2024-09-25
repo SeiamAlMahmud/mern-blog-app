@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
+import './Search.css'
 import { useBlogContext } from '../../context/ContextContainer';
 import HomePagePost from '../../components/HomePagePost/HomePagePost';
 import Loader from '../../foundation/Loader/Loader';
@@ -11,7 +11,7 @@ function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] =useState(false)
+  const [loading, setLoading] = useState(false)
 
 
   const query = searchParams.get('keyword') || '';
@@ -28,8 +28,8 @@ function Search() {
     } catch (error) {
       console.error('Error fetching posts', error);
       setPosts([]);
-    }finally {
-    setLoading(false)
+    } finally {
+      setLoading(false)
 
     }
   };
@@ -58,7 +58,7 @@ function Search() {
   };
 
   return (
-    <div className="App">
+    <div className="search__section">
       <h1>Post Search</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -67,20 +67,25 @@ function Search() {
           value={search}
           onChange={handleSearchChange}
         />
-        <button type="submit">Search</button>
+        <button
+          class="button-75"
+          type="submit"
+          role="button">
+            <span class="text">Search</span>
+            </button>
       </form>
 
       <div>
-        <h2>Results:</h2>
-        {loading ? <Loader /> : 
-        <div> {posts.length > 0 ? (
-          posts.map((post) => (
-            <HomePagePost post={post} key={post._id} />
-          ))
-        ) : (
-          <p style={{fontSize: '2rem', textAlign: 'center', margin: '4rem'}}>No posts found</p>
-        )}
-        </div>}
+        <h2 style={{color: '#f34079'}}>Results:</h2>
+        {loading ? <Loader /> :
+          <div> {posts.length > 0 ? (
+            posts.map((post) => (
+              <HomePagePost post={post} key={post._id} />
+            ))
+          ) : (
+            <p style={{ fontSize: '2rem', textAlign: 'center', margin: '4rem' }}>No posts found</p>
+          )}
+          </div>}
 
         <div className="pagination-controls">
           <p>Page {currentPage} of {totalPages}</p>
